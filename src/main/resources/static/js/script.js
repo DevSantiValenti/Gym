@@ -4,3 +4,4 @@ document.getElementById("busqueda").addEventListener("keyup", function(e) {
     alert("Buscando socio: " + e.target.value);
   }
 });
+document.getElementById("busqueda").focus();

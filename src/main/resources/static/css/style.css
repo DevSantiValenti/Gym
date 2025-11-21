@@ -85,17 +85,25 @@ header input {
 
 .alertas {
   display: flex;
-  gap: 1rem;
+  gap: 3rem;
+  justify-content: center;
+  /* column-gap: 10px; */
+  /* margin: 10px; */
 }
 
-.alert {
-  flex: 1;
+.deuda, .horario {
   background-color: #e60000;
   color: #fff;
   padding: 0.7rem;
   font-weight: bold;
   text-align: center;
   border-radius: 6px;
+  width: 50%;
+  /* gap: 10px; */
+}
+
+.deuda{
+  margin-right: 50px;
 }
 
 .tarjeta {

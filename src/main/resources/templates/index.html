@@ -1,69 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="es-ar" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Control Fit - Acceso</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <script defer src="/js/script.js"></script>
-</head>
-
-<body>
-  <div layout:fragment="contenido">
-    <div class="container">
-      <aside class="sidebar">
-        <div class="logo">
-          <img src="/img/clubfit-removebg-preview.png" alt="Control Fit">
-        </div>
-        <nav>
-          <ul>
-            <li>🏠 Acceso</li>
-            <li>👥 Socios</li>
-            <li>🏋️‍♂️ Actividades</li>
-            <li>👨‍🏫 Instructores</li>
-            <li>💼 Caja</li>
-            <li>📊 Estadísticas</li>
-            <li>💬 Whatsapp</li>
-            <li>📅 Turnos</li>
-          </ul>
-        </nav>
-      </aside>
-
-      <main class="main">
-        <header>
-          <h2>CONTROL DE ACCESO</h2>
-          <input type="text" id="busqueda" placeholder="NOMBRE / DNI / ID">
-        </header>
-
-        <section class="info-socio">
-          <div class="alertas">
-            <div class="alert deuda">💰 DEUDA: $30.000</div>
-            <div class="alert horario">⏰ FUERA DE HORARIO</div>
-          </div>
-
-          <div class="tarjeta">
-            <img src="https://www.greatestphysiques.com/wp-content/uploads/2018/01/Larry-Wheels.02.jpg" alt="Foto socio"
-              class="foto-socio">
-            <div class="datos">
-              <p><strong>Nombre:</strong> Larry Wheels</p>
-              <p><strong>Actividad:</strong> Musculación</p>
-              <p><strong>Frecuencia:</strong> 5 días por semana [1]</p>
-              <p><strong>Vencimiento:</strong> 06/12/2025</p>
-            </div>
-          </div>
-
-          <div class="estado">
-            <h3>CUOTA VENCIDA</h3>
-          </div>
-        </section>
-      </main>
-    </div> 
-  </div>
-  <script th:fragment="js"></script>
-</body>
-
-</html> -->
 <!DOCTYPE html>
 <html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout}">
@@ -87,12 +21,12 @@
 
     <section class="info-socio">
       <div class="alertas">
-        <div class="alert deuda">💰 DEUDA: $30.000</div>
-        <div class="alert horario">⏰ FUERA DE HORARIO</div>
+        <!-- <div class="deuda">💰 DEUDA: $30.000</div> -->
+        <!-- <div class="horario">⏰ FUERA DE HORARIO</div> -->
       </div>
 
       <div class="tarjeta">
-        <img src="https://www.greatestphysiques.com/wp-content/uploads/2018/01/Larry-Wheels.02.jpg" alt="Foto socio"
+        <img src="/img/perfil.jpg" alt="Foto socio"
           class="foto-socio">
         <div class="datos">
           <p><strong>Nombre:</strong> Larry Wheels</p>
@@ -109,7 +43,8 @@
   </div>
 
   <!-- Mis JS -->
-    <script th:fragment="js"></script>
+  <script th:fragment="js"></script>
+  
 </body>
 
 </html>
