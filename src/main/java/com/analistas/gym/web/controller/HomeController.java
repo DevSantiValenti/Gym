@@ -9,7 +9,7 @@ public class HomeController {
 
     @GetMapping({"/", "/home"})
     public String getMethodName() {
-        return "plantilla.html";
+        return "index.html";
     }
     
 
