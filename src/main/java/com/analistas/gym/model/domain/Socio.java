@@ -35,14 +35,24 @@ public class Socio {
 
     private String direccion;
 
+    private String actividad;
+
+    private String profesion;
+
     private LocalDateTime fechaAlta;
 
     private LocalDateTime ultIngreso;
 
-    private LocalDateTime fechaVencimiento;
+    private LocalDate fechaVencimiento;
 
+    
+    
     private Integer saldoPendiente;
 
     private Boolean CuotaPaga;
 
+    // public void prePersist(){
+    //     fechaAlta = LocalDateTime.now();
+
+    // }
 }

@@ -1,0 +1,115 @@
+package com.analistas.gym.web.controller;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.analistas.gym.model.domain.Socio;
+import com.analistas.gym.model.domain.SocioRegistroDTO;
+import com.analistas.gym.model.service.ISocioService;
+
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@Controller
+@RequestMapping("/socios")
+@SessionAttributes("socioRegistro")
+public class SocioController {
+
+    @Autowired
+    ISocioService socioService;
+
+    // Este método se ejecuta automáticamente antes de cualquier handler
+    @ModelAttribute("socioRegistro")
+    public SocioRegistroDTO inicializarSocioRegistro() {
+        return new SocioRegistroDTO();
+    }
+
+    // Paso 1
+    @GetMapping("/nuevo")
+    public String nuevoSocio(Model model) {
+
+        return "socios/socios-form.html";
+    }
+
+    // Despues del paso anterior, al dar click en siguiente:
+
+    @PostMapping("/nuevo")
+    public String procesarSocio1(@Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto, BindingResult result,
+            RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            // Si hay errores, vuelve al paso 1
+            return "socios/socios-form.html";
+        }
+
+        System.out.println("DTO recibido: " + dto); // ← Verás si los campos están vacíos
+        
+
+        return "redirect:/socios/nuevo/final";
+    }
+
+    // Paso 2: mostrar el formulario de membresía
+    @GetMapping("/nuevo/final")
+    public String mostrarFormularioPaso2(Model model) {
+        // El objeto "socioRegistro" ya está en sesión gracias a @SessionAttributes
+        // Si por alguna razón no está, lo agregamos (aunque no debería pasar)
+        if (!model.containsAttribute("socioRegistro")) {
+            return "redirect:/socios/nuevo";
+        }
+
+        model.addAttribute("fechaInicio", LocalDateTime.now());
+        model.addAttribute("fechaVencimiento", (LocalDate.now()).plusMonths(1));
+        return "socios/socios-form-2.html"; // ← nombre de tu segunda plantilla
+    }
+
+    // Paso 2
+    @PostMapping("/guardar")
+    public String finalizarFormulario(@Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto,
+            BindingResult result, SessionStatus sessionStatus, RedirectAttributes redirectAttributes, Model model) {
+
+        if (result.hasErrors()) {
+            return "socios/socios-form.html";
+        }
+
+        Integer cuota = 20000;
+
+        Socio socio = new Socio();
+
+        System.out.println("DTO recibido: " + dto); // ← Verás si los campos están vacíos
+        
+
+        socio.setNombreCompleto(dto.getNombreCompleto());
+        socio.setDni(dto.getDni());
+        socio.setFechaNacimiento(dto.getFechaNacimiento());
+        socio.setTelefono(dto.getTelefono());
+        socio.setProfesion(dto.getProfesion());
+        socio.setDireccion(dto.getDireccion());
+        // Paso 2
+        socio.setActividad(dto.getActividad());
+        socio.setFechaAlta(LocalDateTime.now());
+        socio.setFechaVencimiento((LocalDate.now()).plusMonths(1));
+        socio.setSaldoPendiente(cuota-dto.getMonto());
+
+        // model.addAttribute("fechaInicio", socio.getFechaAlta());
+        // model.addAttribute("fechaVencimiento", socio.getFechaVencimiento());
+
+        socioService.guardar(socio);
+        sessionStatus.setComplete();
+        redirectAttributes.addFlashAttribute("mensaje", "Socio Registrado con éxito!");
+
+        return "redirect:/home";
+    }
+
+}
