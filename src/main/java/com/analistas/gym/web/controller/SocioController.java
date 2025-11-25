@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+
 @Controller
 @RequestMapping("/socios")
 @SessionAttributes("socioRegistro")
@@ -29,6 +30,15 @@ public class SocioController {
 
     @Autowired
     ISocioService socioService;
+
+
+    @GetMapping("/listadoAdmin")
+    public String listadoSocios(Model model) {
+        model.addAttribute("titulo","Listado de Socios");
+        model.addAttribute("socios", socioService.listarSocios());
+        return "socios/socios-list-admin.html";
+    }
+    
 
     // Este método se ejecuta automáticamente antes de cualquier handler
     @ModelAttribute("socioRegistro")
@@ -101,6 +111,7 @@ public class SocioController {
         socio.setFechaAlta(LocalDateTime.now());
         socio.setFechaVencimiento((LocalDate.now()).plusMonths(1));
         socio.setSaldoPendiente(cuota-dto.getMonto());
+        socio.setCuotaPaga(true);
 
         // model.addAttribute("fechaInicio", socio.getFechaAlta());
         // model.addAttribute("fechaVencimiento", socio.getFechaVencimiento());

@@ -16,6 +16,7 @@
 
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
 </head>
 
 <body>
@@ -26,12 +27,12 @@
             </div>
             <nav>
                 <ul>
-                    <li>🏠 Acceso</li>
-                    <li>👥 Socios</li>
-                    <li>🏋️‍♂️ Actividades</li>
-                    <li>👨‍🏫 Personal</li>
-                    <li>💼 Caja</li>
-                    <li>📊 Estadísticas</li>
+                    <li><a th:href="@{/home}">🏠 Acceso</a></li>
+                    <li><a th:href="@{/socios/listadoAdmin}">👥 Socios</a></li>
+                    <li><a href="">🏋️‍♂️ Actividades</a></li>
+                    <li><a href="">👨‍🏫 Personal</a></li>
+                    <li><a href="">💼 Caja</a></li>
+                    <li><a href="">📊 Estadísticas</a></li>
                     <!-- <li>💬 Whatsapp</li> -->
                 </ul>
             </nav>

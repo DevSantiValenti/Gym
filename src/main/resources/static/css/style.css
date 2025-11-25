@@ -53,6 +53,14 @@ body {
   transition: 0.3s;
 }
 
+.sidebar ul li a{
+  text-decoration: none;
+}
+
+.sidebar ul li a:visited{
+  color: inherit;
+}
+
 .sidebar ul li:hover {
   color: #e60000;
 }

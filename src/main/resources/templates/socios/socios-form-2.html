@@ -98,39 +98,6 @@
 <body>
     <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
     <div layout:fragment="contenido">
-        <!-- <h2>DETALLES DE MEMBRESÍA</h2>
-        <form th:action="@{/socios/guardar}" method="post">
-            <div>
-                <label>Tipo de membresía</label>
-                <select name="tipoMembresia" id="actividad">
-                    <option value="gym">Gimnasio</option>
-                    <option value="funcional">Funcional</option>
-                    <option value="otro">Otro</option>
-                </select>
-            </div>
-
-            <div>
-                <label>Monto mensual ($)</label>
-                <input type="number" name="monto" required>
-            </div>
-
-            <div>
-                <label>Días por semana</label>
-                <input type="number" name="diasPorSemana" min="1" max="7" required>
-            </div>
-
-            <div>
-                <label>Fecha de inicio</label>
-                <input type="date" name="fechaInicio" th:value="${#temporals.format(fechaInicio, 'dd-MM-yyyy')}" required>
-            </div>
-
-            <div>
-                <label for="">Fecha de Vencimiento</label>
-                <input type="date" name="fechaInicio" th:value="${#temporals.format(fechaVencimiento, 'dd-MM-yyyy')}" required>
-            </div>
-
-            <button type="submit" class="btn-siguiente">REGISTRAR SOCIO</button>
-        </form> -->
         <div class="form-container">
             <h2>DETALLES DE MEMBRESÍA</h2>
 
@@ -142,9 +109,9 @@
                         <label for="actividad" class="required">Tipo de membresía</label>
                         <select name="actividad" id="actividad" required>
                             <option value="">Seleccione...</option>
-                            <option value="gym">Gimnasio</option>
-                            <option value="funcional">Funcional</option>
-                            <option value="otro">Otro</option>
+                            <option value="Gym">Gimnasio</option>
+                            <option value="Funcional">Funcional</option>
+                            <option value="Otro">Otro</option>
                         </select>
                     </div>
                 </div>
