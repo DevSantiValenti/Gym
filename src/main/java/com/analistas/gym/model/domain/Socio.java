@@ -45,14 +45,9 @@ public class Socio {
 
     private LocalDate fechaVencimiento;
 
-    
+    private Integer vecesIngresado;
     
     private Integer saldoPendiente;
 
     private Boolean CuotaPaga;
-
-    // public void prePersist(){
-    //     fechaAlta = LocalDateTime.now();
-
-    // }
 }

@@ -133,6 +133,7 @@ header input {
 
 .datos p {
   margin: 0.4rem 0;
+  font-size: x-large;
 }
 
 .estado {
@@ -147,4 +148,13 @@ header input {
 .estado h3 {
   color: #fff;
   font-weight: bold;
+}
+
+.cuota-al-dia{
+  background-color: rgb(0, 255, 0);
+  color: #000 !important;
+}
+
+.cuota-vencida{
+  background-color: red;
 }
