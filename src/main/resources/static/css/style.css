@@ -53,11 +53,11 @@ body {
   transition: 0.3s;
 }
 
-.sidebar ul li a{
+.sidebar ul li a {
   text-decoration: none;
 }
 
-.sidebar ul li a:visited{
+.sidebar ul li a:visited {
   color: inherit;
 }
 
@@ -99,7 +99,8 @@ header input {
   /* margin: 10px; */
 }
 
-.deuda, .horario {
+.deuda,
+.horario {
   background-color: #e60000;
   color: #fff;
   padding: 0.7rem;
@@ -110,7 +111,7 @@ header input {
   /* gap: 10px; */
 }
 
-.deuda{
+.deuda {
   margin-right: 50px;
 }
 
@@ -150,11 +151,21 @@ header input {
   font-weight: bold;
 }
 
-.cuota-al-dia{
+.cuota-al-dia {
   background-color: rgb(0, 255, 0);
   color: #000 !important;
 }
 
-.cuota-vencida{
+.cuota-vencida {
   background-color: red;
+}
+
+/* Clase para aviso de vencimiento próximo (<= 5 días) */
+.cuota-proximo {
+  background-color: #ffeb3b;
+  /* amarillo claro */
+  color: #000 !important;
+  border-radius: 8px;
+  text-align: center;
+  padding: 1rem;
 }

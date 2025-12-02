@@ -7,12 +7,18 @@ import com.analistas.gym.model.domain.Socio;
 
 public interface ISocioService  {
 
+    public Socio buscarPorId(Long id);
+
     public List<Socio> listarSocios();
+
+    public List<Socio> buscarTodos();
 
     public void guardar(Socio socio);
 
-    // public Socio buscarPorDNI(String dni);
+    public Socio buscarPorDNI(String dni);
 
     public Optional<Socio> actualizarVecesIngresado(String dni);
+
+    public List<Socio> listarSociosActualizados();
 
 }

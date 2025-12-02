@@ -20,8 +20,8 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 
 @Controller
 @RequestMapping("/socios")
@@ -31,14 +31,12 @@ public class SocioController {
     @Autowired
     ISocioService socioService;
 
-
     @GetMapping("/listadoAdmin")
     public String listadoSocios(Model model) {
-        model.addAttribute("titulo","Listado de Socios");
-        model.addAttribute("socios", socioService.listarSocios());
+        model.addAttribute("titulo", "Listado de Socios");
+        model.addAttribute("socios", socioService.listarSociosActualizados());
         return "socios/socios-list-admin.html";
     }
-    
 
     // Este método se ejecuta automáticamente antes de cualquier handler
     @ModelAttribute("socioRegistro")
@@ -65,7 +63,6 @@ public class SocioController {
         }
 
         System.out.println("DTO recibido: " + dto); // ← Verás si los campos están vacíos
-        
 
         return "redirect:/socios/nuevo/final";
     }
@@ -75,6 +72,7 @@ public class SocioController {
     public String mostrarFormularioPaso2(Model model) {
         // El objeto "socioRegistro" ya está en sesión gracias a @SessionAttributes
         // Si por alguna razón no está, lo agregamos (aunque no debería pasar)
+
         if (!model.containsAttribute("socioRegistro")) {
             return "redirect:/socios/nuevo";
         }
@@ -89,16 +87,40 @@ public class SocioController {
     public String finalizarFormulario(@Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto,
             BindingResult result, SessionStatus sessionStatus, RedirectAttributes redirectAttributes, Model model) {
 
+        Integer cuota = 20000;
+
+        // -------------------------------------------------------------
+        // 1) Ver si el socio YA EXISTE (por DNI)
+        // -------------------------------------------------------------
+        Socio socioExistente = null;
+
+        if (dto.getDni() != null && !dto.getDni().isBlank()) {
+            socioExistente = socioService.buscarPorDNI(dto.getDni());
+        }
+
+        // -------------------------------------------------------------
+        // 2) SI EXISTE → SOLO ACTUALIZA CUOTA
+        // -------------------------------------------------------------
+        if (socioExistente != null) {
+
+            socioExistente.setSaldoPendiente(cuota - dto.getMonto());
+            socioExistente.setFechaVencimiento(LocalDate.now().plusMonths(1));
+            socioExistente.setCuotaPaga(true);
+
+            socioService.guardar(socioExistente);
+
+            redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
+            return "redirect:/home";
+        }
+
+        // Si el socio no existe: --------------------------------------------------
         if (result.hasErrors()) {
             return "socios/socios-form.html";
         }
 
-        Integer cuota = 20000;
-
         Socio socio = new Socio();
-
-        System.out.println("DTO recibido: " + dto); // ← Verás si los campos están vacíos
-        
+        // System.out.println("DTO recibido: " + dto); // ← Verás si los campos están
+        // vacíos
 
         socio.setNombreCompleto(dto.getNombreCompleto());
         socio.setDni(dto.getDni());
@@ -110,7 +132,7 @@ public class SocioController {
         socio.setActividad(dto.getActividad());
         socio.setFechaAlta(LocalDateTime.now());
         socio.setFechaVencimiento((LocalDate.now()).plusMonths(1));
-        socio.setSaldoPendiente(cuota-dto.getMonto());
+        socio.setSaldoPendiente(cuota - dto.getMonto());
         socio.setCuotaPaga(true);
 
         // model.addAttribute("fechaInicio", socio.getFechaAlta());
@@ -123,7 +145,23 @@ public class SocioController {
         return "redirect:/home";
     }
 
-    // Controlar el INGRESO de los socios:
-    
+    // Abonar cuota cuando esté vencida:
+    @GetMapping("/editar/{id}")
+    public String editarEstadoCuota(@PathVariable Long id, Model model) {
+
+        Socio socio = socioService.buscarPorId(id);
+
+        SocioRegistroDTO dto = new SocioRegistroDTO();
+        dto.setDni(socio.getDni());
+
+
+        model.addAttribute("socioRegistro", dto);
+        model.addAttribute("titulo", "Abonar Cuota");
+        model.addAttribute("socio", socio);
+        model.addAttribute("fechaInicio", LocalDateTime.now());
+        model.addAttribute("fechaVencimiento", (LocalDate.now()).plusMonths(1));
+
+        return "socios/socios-form-2.html";
+    }
 
 }

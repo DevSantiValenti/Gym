@@ -32,6 +32,7 @@
             overflow-x: auto;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            padding: 6px;
         }
 
         table {
@@ -111,6 +112,97 @@
         .boton-nuevo:hover {
             background-color: #45a049;
         }
+
+        /* saaaaaaaaaaaaaaaaaa */
+        /* Estilos generales para DataTables */
+.dataTables_wrapper .dataTables_filter input {
+    background-color: #1e1e1e;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    background-color: #1e1e1e;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    height: auto;
+}
+
+.dataTables_wrapper .dataTables_info {
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 0;
+}
+
+/* Botones de paginación */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #1e1e1e;
+    color: #fff !important;
+    border: 1px solid #555;
+    margin: 0 2px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #333;
+    color: #ff9900 !important;
+    border-color: #ff9900;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #ff9900;
+    color: #000 !important;
+    border-color: #ff9900;
+    font-weight: bold;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Etiquetas "Mostrar X registros" y "Buscar" */
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label {
+    color: #fff;
+    font-size: 14px;
+    /* display: flex; */
+    align-items: center;
+    gap: 8px;
+}
+
+.dataTables_wrapper .dataTables_filter label input {
+    margin-left: 8px;
+}
+
+/* Para el input de búsqueda dentro del label */
+.dataTables_wrapper .dataTables_filter input {
+    width: 150px;
+}
+
+/* Estilo para la barra de desplazamiento si aparece (opcional) */
+::-webkit-scrollbar {
+    height: 8px;
+    background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
     </style>
 </head>
 
@@ -123,7 +215,7 @@
             <a th:href="@{/socios/nuevo}" class="boton-nuevo">+ NUEVO SOCIO</a>
 
             <div class="table-wrapper">
-                <table>
+                <table id="sociosTable" class="display table-dark table-striped" style="width:100%">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -152,21 +244,22 @@
                                 <span th:if="${socio.cuotaPaga != null}"
                                     th:class="${socio.cuotaPaga} ? 'estado-pagado' : 'estado-pendiente'"
                                     th:text="${socio.cuotaPaga} ? 'PAGADA' : 'PENDIENTE'">
-                                    PAGADA
+                                    <!-- PAGADA -->
                                 </span>
                                 <span th:if="${socio.cuotaPaga == null}">-</span>
                             </td>
                             <td class="acciones">
-                                <a th:href="@{/socios/editar/{id}(id=${socio.id})}" class="editar">Editar</a>
-                                <a th:href="@{/socios/eliminar/{id}(id=${socio.id})}" class="eliminar"
+                                <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
+                                    class="editar text-warning me-2">Editar</a>
+                                <a th:href="@{/socios/eliminar/{id}(id=${socio.id})}" class="eliminar text-danger"
                                     onclick="return confirm('¿Está seguro de eliminar este socio?')">Eliminar</a>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(socios)}">
+                        <!-- <tr th:if="${#lists.isEmpty(socios)}">
                             <td colspan="10" style="text-align: center; padding: 20px; color: #888;">
                                 No hay socios registrados.
                             </td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
@@ -174,7 +267,7 @@
     </div>
 
     <!-- Mis JS -->
-    <script th:fragment="js"></script>
+    <script th:fragment="js" th:src="@{/js/socios-list-admin.js}"></script>
 </body>
 
 </html>

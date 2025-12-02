@@ -8,7 +8,22 @@
   <title th:text="${titulo}"></title>
 
   <link rel="icon" type="image/png" th:href="@{/img/clubfit-removebg-preview.png}">
-
+  <style>
+    .btn-abonar {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #060604;
+      color: rgb(225, 255, 0);
+      font-weight: bold;
+      font-size: x-large;
+      border-radius: 10px;
+      text-align: center;
+      margin: auto;
+      display: block;
+      width: 140px;
+      text-decoration: none !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -36,61 +51,7 @@
       </div>
     </section>
   </div>
-
-  <!-- Mis JS -->
-  <!-- <script th:fragment="js"></script> -->
-  <script th:fragment="js">
-    document.getElementById('busqueda').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        const dni = this.value.trim();
-        if (dni === '') return;
-
-        fetch(`/api/socios/dni?dni=${encodeURIComponent(dni)}`)
-          .then(response => {
-            if (!response.ok) throw new Error('Socio no encontrado');
-            return response.json();
-          })
-          .then(socio => {
-            // Mostrar datos
-            document.getElementById('datos-socio').innerHTML = `
-              <p><strong>Nombre:</strong> ${socio.nombreCompleto}</p>
-              <p><strong>Actividad:</strong> ${socio.actividad || 'N/A'}</p>
-              <p><strong>Frecuencia:</strong> ${socio.vecesIngresado || 0} veces ingresado</p>
-              <p><strong>Vencimiento:</strong> ${socio.fechaVencimiento ? new Date(socio.fechaVencimiento).toLocaleDateString('es-AR') : 'N/A'}</p>
-              <p><strong>Ultimo Ingreso:</strong> ${socio.ultIngreso
-                ? new Date(socio.ultIngreso).toLocaleString('es-AR', {
-                  dateStyle: 'short',
-                  timeStyle: 'short',
-                  hourCycle: 'h23' //fuerza formato 24 horas
-                })
-                : 'N/A'}
-              </p>
-            `;
-            document.getElementById('tarjeta').style.display = 'flex';
-
-            // Estado cuota
-            const estadoDiv = document.getElementById('estado');
-            estadoDiv.style.display = 'block';
-            if (socio.cuotaPaga === false) {
-              estadoDiv.innerHTML = '<h3>CUOTA VENCIDA</h3>';
-              estadoDiv.className = 'estado cuota-vencida';
-            } else {
-              estadoDiv.innerHTML = '<h3>CUOTA AL DÍA</h3>';
-              estadoDiv.className = 'estado cuota-al-dia';
-            }
-
-            // Limpiar alertas previas
-            document.getElementById('alertas').innerHTML = '';
-          })
-          .catch(() => {
-            document.getElementById('alertas').innerHTML = '<div class="error">❌ Socio no encontrado</div>';
-            document.getElementById('tarjeta').style.display = 'none';
-            document.getElementById('estado').style.display = 'none';
-          });
-      }
-    });
-  </script>
-
+  <script th:fragment="js" th:src="@{/js/index.js}"></script>
 </body>
 
 </html>

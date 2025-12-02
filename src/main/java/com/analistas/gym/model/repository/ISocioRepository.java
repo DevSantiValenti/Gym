@@ -11,6 +11,8 @@ public interface ISocioRepository extends CrudRepository<Socio, Long> {
 
     // List<Socio> findByDni(String dni);
 
+    
+
     Optional<Socio> findByDni(String dni);
     
 }
