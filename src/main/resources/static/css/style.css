@@ -3,7 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Segoe UI", sans-serif;
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 body {
@@ -157,4 +157,14 @@ header input {
 
 .cuota-vencida{
   background-color: red;
+}
+
+.dropdown-menu {
+    background-color: #343a40 !important;
+}
+.dropdown-item {
+    color: white !important;
+}
+.dropdown-item:hover {
+    background-color: #495057 !important;
 }
