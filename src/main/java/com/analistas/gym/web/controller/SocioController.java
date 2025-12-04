@@ -164,4 +164,22 @@ public class SocioController {
         return "socios/socios-form-2.html";
     }
 
+    // Eliminar Socio
+    @GetMapping("/eliminar/{id}")
+    public String eliminarSocio(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+    Socio socio = socioService.buscarPorId(id);
+
+    if (socio == null) {
+        redirectAttributes.addFlashAttribute("error", "El socio no existe.");
+        return "redirect:/socios/listadoAdmin";
+    }
+
+    socioService.eliminar(id);
+
+    redirectAttributes.addFlashAttribute("mensaje", "Socio eliminado correctamente.");
+
+    return "redirect:/socios/listadoAdmin";
+}
+
 }

@@ -15,6 +15,8 @@ public interface ISocioService  {
 
     public void guardar(Socio socio);
 
+    public void eliminar(Long id);
+
     public Socio buscarPorDNI(String dni);
 
     public Optional<Socio> actualizarVecesIngresado(String dni);

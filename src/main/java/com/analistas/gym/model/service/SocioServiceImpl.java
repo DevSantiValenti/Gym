@@ -107,4 +107,9 @@ public class SocioServiceImpl implements ISocioService {
         return socioRepository.findByDni(dni).orElse(null);
     }
 
+    @Override
+    public void eliminar(Long id) {
+    socioRepository.deleteById(id);
+    }
+
 }

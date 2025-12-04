@@ -39,12 +39,16 @@ $(document).ready(() => {
         language: {
             // url: "https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json",
             "search": "Buscar",
-            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sLengthMenu": "Mostrar _MENU_ registros por página",
             "info": "Mostrando de _START_ a _END_ de _TOTAL_ socios",
             "infoFiltered": " (Filtrado de _MAX_ socios)",
             "infoEmpty": "No hay coincidencias...",
             "zeroRecords": "No hay nada aquí...",
-            "emptyTable": "No hay nada aquí..."
+            "emptyTable": "No hay nada aquí...",
+            "paginate" : {
+                "previous" : "Anterior",
+                "next" : "Siguiente",
+            }
         },
     });
 });

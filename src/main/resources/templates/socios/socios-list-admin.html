@@ -115,94 +115,94 @@
 
         /* saaaaaaaaaaaaaaaaaa */
         /* Estilos generales para DataTables */
-.dataTables_wrapper .dataTables_filter input {
-    background-color: #1e1e1e;
-    color: #fff;
-    border: 1px solid #555;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-size: 14px;
-}
+        .dataTables_wrapper .dataTables_filter input {
+            background-color: #1e1e1e;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
 
-.dataTables_wrapper .dataTables_length select {
-    background-color: #1e1e1e;
-    color: #fff;
-    border: 1px solid #555;
-    padding: 6px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    height: auto;
-}
+        .dataTables_wrapper .dataTables_length select {
+            background-color: #1e1e1e;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            height: auto;
+        }
 
-.dataTables_wrapper .dataTables_info {
-    color: #fff;
-    font-size: 14px;
-    padding: 8px 0;
-}
+        .dataTables_wrapper .dataTables_info {
+            color: #fff;
+            font-size: 14px;
+            padding: 8px 0;
+        }
 
-/* Botones de paginación */
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    background-color: #1e1e1e;
-    color: #fff !important;
-    border: 1px solid #555;
-    margin: 0 2px;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: all 0.2s;
-}
+        /* Botones de paginación */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            background-color: #1e1e1e;
+            color: #fff !important;
+            border: 1px solid #555;
+            margin: 0 2px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    background-color: #333;
-    color: #ff9900 !important;
-    border-color: #ff9900;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #333;
+            color: #ff9900 !important;
+            border-color: #ff9900;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.current {
-    background-color: #ff9900;
-    color: #000 !important;
-    border-color: #ff9900;
-    font-weight: bold;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #ff9900;
+            color: #000 !important;
+            border-color: #ff9900;
+            font-weight: bold;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
-/* Etiquetas "Mostrar X registros" y "Buscar" */
-.dataTables_wrapper .dataTables_length label,
-.dataTables_wrapper .dataTables_filter label {
-    color: #fff;
-    font-size: 14px;
-    /* display: flex; */
-    align-items: center;
-    gap: 8px;
-}
+        /* Etiquetas "Mostrar X registros" y "Buscar" */
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_filter label {
+            color: #fff;
+            font-size: 14px;
+            /* display: flex; */
+            align-items: center;
+            gap: 8px;
+        }
 
-.dataTables_wrapper .dataTables_filter label input {
-    margin-left: 8px;
-}
+        .dataTables_wrapper .dataTables_filter label input {
+            margin-left: 8px;
+        }
 
-/* Para el input de búsqueda dentro del label */
-.dataTables_wrapper .dataTables_filter input {
-    width: 150px;
-}
+        /* Para el input de búsqueda dentro del label */
+        .dataTables_wrapper .dataTables_filter input {
+            width: 150px;
+        }
 
-/* Estilo para la barra de desplazamiento si aparece (opcional) */
-::-webkit-scrollbar {
-    height: 8px;
-    background: #1e1e1e;
-}
+        /* Estilo para la barra de desplazamiento si aparece (opcional) */
+        ::-webkit-scrollbar {
+            height: 8px;
+            background: #1e1e1e;
+        }
 
-::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 4px;
-}
+        ::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #777;
-}
+        ::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
     </style>
 </head>
 
@@ -231,8 +231,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="socio : ${socios}">
-                            <td th:text="${socio.id}"></td>
+                        <tr th:each="socio, iterStat : ${socios}">  <!-- Esta parte hace que cuando elimines -->
+                            <td th:text="${iterStat.index + 1}"></td> <!-- un socio el id se reinicie -->
                             <td th:text="${socio.nombreCompleto}"></td>
                             <td th:text="${socio.dni}"></td>
                             <td th:text="${socio.telefono}"></td>
