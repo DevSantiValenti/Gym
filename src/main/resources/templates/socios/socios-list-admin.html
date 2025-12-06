@@ -231,7 +231,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="socio, iterStat : ${socios}">  <!-- Esta parte hace que cuando elimines -->
+                        <tr th:each="socio, iterStat : ${socios}"> <!-- Esta parte hace que cuando elimines -->
                             <td th:text="${iterStat.index + 1}"></td> <!-- un socio el id se reinicie -->
                             <td th:text="${socio.nombreCompleto}"></td>
                             <td th:text="${socio.dni}"></td>
@@ -251,8 +251,10 @@
                             <td class="acciones">
                                 <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
                                     class="editar text-warning me-2">Editar</a>
-                                <a th:href="@{/socios/eliminar/{id}(id=${socio.id})}" class="eliminar text-danger"
-                                    onclick="return confirm('¿Está seguro de eliminar este socio?')">Eliminar</a>
+                                <a href="#" class="eliminar text-danger"
+                                    th:onclick="'confirmarEliminacion(' + ${socio.id} + ');'">
+                                    Eliminar
+                                </a>
                             </td>
                         </tr>
                         <!-- <tr th:if="${#lists.isEmpty(socios)}">
@@ -268,6 +270,7 @@
 
     <!-- Mis JS -->
     <script th:fragment="js" th:src="@{/js/socios-list-admin.js}"></script>
+    
 </body>
 
 </html>
