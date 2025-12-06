@@ -10,12 +10,24 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
             })
             .then(socio => {
 
-                // --- FIX FECHAS ---
-                // Convertimos LocalDate (YYYY-MM-DD) a fecha estable sin problemas de timezone
-                const parseLocalDate = (fecha) =>
-                    fecha ? new Date(`${fecha}T12:00:00`) : null;
+                const parseLocalDate = (fechaStr) => {
+                    if (!fechaStr) return null;
+                    const [year, month, day] = fechaStr.split('-').map(Number);
+                    return new Date(year, month - 1, day, 12, 0, 0); // mes en JS es 0-based
+                };
 
                 const fechaVto = parseLocalDate(socio.fechaVencimiento);
+
+                let diasRestantes = null;
+
+                if (fechaVto) {
+                    const hoy = new Date();
+                    const hoyFlat = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 12, 0, 0);
+
+                    // NO reconstruyas fechaVto, ya es una fecha "plana"
+                    diasRestantes = Math.floor((fechaVto - hoyFlat) / (1000 * 60 * 60 * 24));
+                }
+
                 const ultIngreso = socio.ultIngreso ? new Date(socio.ultIngreso) : null;
 
                 // Mostrar datos
@@ -24,33 +36,13 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
             <p><strong>Actividad:</strong> ${socio.actividad || 'N/A'}</p>
             <p><strong>Frecuencia:</strong> ${socio.vecesIngresado || 0} veces ingresado</p>
             <p><strong>Vencimiento:</strong> ${fechaVto ? fechaVto.toLocaleDateString('es-AR') : 'N/A'}</p>
-            <p><strong>Ultimo Ingreso:</strong> ${ultIngreso
-                        ? ultIngreso.toLocaleString('es-AR', {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                            hourCycle: 'h23'
-                        })
-                        : 'N/A'}
-            </p>
           `;
 
                 document.getElementById('tarjeta').style.display = 'flex';
 
-
                 // --- ESTADO CUOTA ---
                 const estadoDiv = document.getElementById('estado');
                 estadoDiv.style.display = 'block';
-
-                let diasRestantes = null;
-
-                if (fechaVto) {
-                    const hoy = new Date();
-
-                    const utcHoy = Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-                    const utcVto = Date.UTC(fechaVto.getFullYear(), fechaVto.getMonth(), fechaVto.getDate());
-
-                    diasRestantes = Math.floor((utcVto - utcHoy) / (1000 * 60 * 60 * 24));
-                }
 
                 const tarjeta = document.getElementById('tarjeta');
 
@@ -84,7 +76,8 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     estadoDiv.className = 'estado cuota-al-dia';
                 }
 
-
+                // console.log("🚀 Fecha recibida del backend:", socio.fechaVencimiento);
+                // ... resto del código
 
                 document.getElementById('alertas').innerHTML = '';
             })

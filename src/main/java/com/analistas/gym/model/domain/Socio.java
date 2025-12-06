@@ -39,7 +39,7 @@ public class Socio {
 
     private String profesion;
 
-    private LocalDateTime fechaAlta;
+    private LocalDate fechaAlta;
 
     private LocalDateTime ultIngreso;
 
@@ -49,5 +49,5 @@ public class Socio {
     
     private Integer saldoPendiente;
 
-    private Boolean CuotaPaga;
+    private Boolean cuotaPaga;
 }

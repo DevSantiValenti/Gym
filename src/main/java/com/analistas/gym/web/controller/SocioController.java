@@ -130,7 +130,7 @@ public class SocioController {
         socio.setDireccion(dto.getDireccion());
         // Paso 2
         socio.setActividad(dto.getActividad());
-        socio.setFechaAlta(LocalDateTime.now());
+        socio.setFechaAlta(LocalDate.now());
         socio.setFechaVencimiento((LocalDate.now()).plusMonths(1));
         socio.setSaldoPendiente(cuota - dto.getMonto());
         socio.setCuotaPaga(true);
@@ -154,7 +154,6 @@ public class SocioController {
         SocioRegistroDTO dto = new SocioRegistroDTO();
         dto.setDni(socio.getDni());
 
-
         model.addAttribute("socioRegistro", dto);
         model.addAttribute("titulo", "Abonar Cuota");
         model.addAttribute("socio", socio);
@@ -168,18 +167,18 @@ public class SocioController {
     @GetMapping("/eliminar/{id}")
     public String eliminarSocio(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
-    Socio socio = socioService.buscarPorId(id);
+        Socio socio = socioService.buscarPorId(id);
 
-    if (socio == null) {
-        redirectAttributes.addFlashAttribute("error", "El socio no existe.");
+        if (socio == null) {
+            redirectAttributes.addFlashAttribute("error", "El socio no existe.");
+            return "redirect:/socios/listadoAdmin";
+        }
+
+        socioService.eliminar(id);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Socio eliminado correctamente.");
+
         return "redirect:/socios/listadoAdmin";
     }
-
-    socioService.eliminar(id);
-
-    redirectAttributes.addFlashAttribute("mensaje", "Socio eliminado correctamente.");
-
-    return "redirect:/socios/listadoAdmin";
-}
 
 }

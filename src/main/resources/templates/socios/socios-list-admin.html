@@ -250,18 +250,13 @@
                             </td>
                             <td class="acciones">
                                 <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
-                                    class="editar text-warning me-2">Editar</a>
+                                    class="editar text-warning me-2">Abonar Cuota</a>
                                 <a href="#" class="eliminar text-danger"
                                     th:onclick="'confirmarEliminacion(' + ${socio.id} + ');'">
                                     Eliminar
                                 </a>
                             </td>
                         </tr>
-                        <!-- <tr th:if="${#lists.isEmpty(socios)}">
-                            <td colspan="10" style="text-align: center; padding: 20px; color: #888;">
-                                No hay socios registrados.
-                            </td>
-                        </tr> -->
                     </tbody>
                 </table>
             </div>

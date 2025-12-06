@@ -76,6 +76,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 25px;
 }
 
 header input {
@@ -88,7 +89,10 @@ header input {
 }
 
 .info-socio {
+  margin-top: 25px;
   margin-top: 2rem;
+  /* width: 50%; */
+  /* margin: 0 auto; */
 }
 
 .alertas {
