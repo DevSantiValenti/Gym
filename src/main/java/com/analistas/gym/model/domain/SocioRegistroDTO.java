@@ -2,6 +2,8 @@ package com.analistas.gym.model.domain;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -13,17 +15,11 @@ public class SocioRegistroDTO {
     private LocalDate fechaNacimiento;
     private String telefono;
     private String direccion;
-    private String actividad;
+    @ManyToOne
+    @JoinColumn(name = "actividad_id") // Foreign key hacia ACTIVIDAD
+    private Actividad actividad;
     private String profesion;
-    // private String email;
-    // private String comoNosConocio;
-    // private String observaciones;
-
     // --- Paso 2: datos de membresía ---
     private Integer monto;
-    // private Integer diasPorSemana;
-    // private LocalDate fechaInicio;
-    // private String tipoMembresia;
 
-    // getters y setters
 }

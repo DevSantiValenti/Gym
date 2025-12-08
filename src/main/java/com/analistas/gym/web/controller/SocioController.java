@@ -2,6 +2,7 @@ package com.analistas.gym.web.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.analistas.gym.model.domain.Actividad;
 import com.analistas.gym.model.domain.Socio;
 import com.analistas.gym.model.domain.SocioRegistroDTO;
+import com.analistas.gym.model.service.IActividadService;
 import com.analistas.gym.model.service.ISocioService;
 
 import jakarta.validation.Valid;
@@ -30,6 +33,9 @@ public class SocioController {
 
     @Autowired
     ISocioService socioService;
+
+    @Autowired
+    IActividadService actividadService;
 
     @GetMapping("/listadoAdmin")
     public String listadoSocios(Model model) {
@@ -77,6 +83,10 @@ public class SocioController {
             return "redirect:/socios/nuevo";
         }
 
+        List<Actividad> actividades = actividadService.listarActividades();
+
+        model.addAttribute("actividad", actividades);
+
         model.addAttribute("fechaInicio", LocalDateTime.now());
         model.addAttribute("fechaVencimiento", (LocalDate.now()).plusMonths(1));
         return "socios/socios-form-2.html"; // ← nombre de tu segunda plantilla
@@ -122,6 +132,9 @@ public class SocioController {
         // System.out.println("DTO recibido: " + dto); // ← Verás si los campos están
         // vacíos
 
+        // Obtener la actividad:
+        Actividad actividad = actividadService.buscarPorId(dto.getActividad().getId());
+
         socio.setNombreCompleto(dto.getNombreCompleto());
         socio.setDni(dto.getDni());
         socio.setFechaNacimiento(dto.getFechaNacimiento());
@@ -129,7 +142,7 @@ public class SocioController {
         socio.setProfesion(dto.getProfesion());
         socio.setDireccion(dto.getDireccion());
         // Paso 2
-        socio.setActividad(dto.getActividad());
+        socio.setActividad(actividad);
         socio.setFechaAlta(LocalDate.now());
         socio.setFechaVencimiento((LocalDate.now()).plusMonths(1));
         socio.setSaldoPendiente(cuota - dto.getMonto());
