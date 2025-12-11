@@ -85,7 +85,7 @@ public class SocioController {
 
         List<Actividad> actividades = actividadService.listarActividades();
 
-        model.addAttribute("actividad", actividades);
+        model.addAttribute("actividades", actividades);
 
         model.addAttribute("fechaInicio", LocalDateTime.now());
         model.addAttribute("fechaVencimiento", (LocalDate.now()).plusMonths(1));

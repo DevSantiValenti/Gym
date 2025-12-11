@@ -26,7 +26,7 @@
                         <label for="actividad" class="required">Tipo de membresía</label>
                         <select id="actividad" required th:field="*{actividad}">
                             <option value="" disabled>Seleccione...</option>
-                            <option th:each="act : ${actividad}" th:value="${act.id}" th:text="${act.nombre}"
+                            <option th:each="act : ${actividades}" th:value="${act.id}" th:text="${act.nombre}"
                                 th:data-monto="${act.monto}"></option>
                         </select>
                     </div>

@@ -2,6 +2,8 @@ package com.analistas.gym.model.domain;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import groovy.transform.ToString;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,5 +25,6 @@ public class Actividad {
     private Integer monto;
 
     @OneToMany(mappedBy = "actividad")
+    @JsonIgnore // ←←← Esto evita que se serialice la lista de socios
     private List<Socio> socios;
 }

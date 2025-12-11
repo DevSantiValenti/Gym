@@ -1,14 +1,19 @@
 document.getElementById('busqueda').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         const dni = this.value.trim();
+        // console.log("Buscando DNI:", dni);
         if (dni === '') return;
 
         fetch(`/api/socios/dni?dni=${encodeURIComponent(dni)}`)
             .then(response => {
+                // console.log("Respuesta cruda:", response);
                 if (!response.ok) throw new Error('Socio no encontrado');
                 return response.json();
             })
             .then(socio => {
+
+                // console.log("Socio recibido:", socio);  // ← AGREGAR ESTE
+                // console.log("Actividad recibida:", socio.actividad); // ← Y ESTE
 
                 const parseLocalDate = (fechaStr) => {
                     if (!fechaStr) return null;
@@ -33,7 +38,7 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                 // Mostrar datos
                 document.getElementById('datos-socio').innerHTML = `
             <p><strong>Nombre:</strong> ${socio.nombreCompleto}</p>
-            <p><strong>Actividad:</strong> ${socio.actividad || 'N/A'}</p>
+            <p><strong>Actividad:</strong> ${socio.actividad ? socio.actividad.nombre : 'N/A'}</p>
             <p><strong>Frecuencia:</strong> ${socio.vecesIngresado || 0} veces ingresado</p>
             <p><strong>Vencimiento:</strong> ${fechaVto ? fechaVto.toLocaleDateString('es-AR') : 'N/A'}</p>
           `;
@@ -76,8 +81,7 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     estadoDiv.className = 'estado cuota-al-dia';
                 }
 
-                // console.log("🚀 Fecha recibida del backend:", socio.fechaVencimiento);
-                // ... resto del código
+                // console.log("Fecha recibida del backend:", socio.fechaVencimiento);
 
                 document.getElementById('alertas').innerHTML = '';
             })
