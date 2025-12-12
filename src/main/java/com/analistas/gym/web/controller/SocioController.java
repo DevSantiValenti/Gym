@@ -167,6 +167,10 @@ public class SocioController {
         SocioRegistroDTO dto = new SocioRegistroDTO();
         dto.setDni(socio.getDni());
 
+        //Mostrar la lista de actividades
+        List<Actividad> actividades = actividadService.listarActividades();
+        model.addAttribute("actividades", actividades);
+
         model.addAttribute("socioRegistro", dto);
         model.addAttribute("titulo", "Abonar Cuota");
         model.addAttribute("socio", socio);

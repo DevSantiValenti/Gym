@@ -16,7 +16,7 @@ $(document).ready(() => {
     $("#sociosTable").DataTable({
         // retrieve: true,
         responsive: true,
-        order: [[2, "asc"]],
+        order: [[0, "asc"]],
         lengthMenu: [10, 25, 50, 100],
         columns: [
             null,
