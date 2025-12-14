@@ -99,18 +99,14 @@ public class SocioController {
 
         Integer cuota = 20000;
 
-        // -------------------------------------------------------------
         // 1) Ver si el socio YA EXISTE (por DNI)
-        // -------------------------------------------------------------
         Socio socioExistente = null;
 
         if (dto.getDni() != null && !dto.getDni().isBlank()) {
             socioExistente = socioService.buscarPorDNI(dto.getDni());
         }
 
-        // -------------------------------------------------------------
         // 2) SI EXISTE → SOLO ACTUALIZA CUOTA
-        // -------------------------------------------------------------
         if (socioExistente != null) {
 
             socioExistente.setSaldoPendiente(cuota - dto.getMonto());

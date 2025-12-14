@@ -41,6 +41,14 @@
                             <td th:text="${act.nombre}"></td>
                             <td th:text="${act.monto}"></td>
                             <td th:text="${#lists.size(act.socios)}"></td>
+                            <td>
+                                <a th:href="@{/actividades/editar/{id}(id=${act.id})}"
+                                    class="editar text-warning me-2 p-2 bg-dark rounded-3">Editar</a>
+                                <a href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
+                                    th:onclick="confirmarEliminacion('/actividades/eliminar/' + [[${act.id}]])">
+                                    Eliminar
+                                </a>
+                            </td>
                             <!-- <td th:text="${socio.actividad}"></td>
                             <td th:text="${#temporals.format(socio.fechaAlta, 'dd/MM/yyyy')}"></td>
                             <td th:text="${#temporals.format(socio.fechaVencimiento, 'dd/MM/yyyy')}"></td>

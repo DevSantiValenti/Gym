@@ -12,4 +12,6 @@ public interface IActividadService {
     public void guardar(Actividad actividad);
 
     public Actividad buscarPorId(Long id);
+
+    public void eliminar(Long id);
 }

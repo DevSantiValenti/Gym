@@ -12,6 +12,7 @@ import com.analistas.gym.model.domain.Actividad;
 import com.analistas.gym.model.service.IActividadService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -41,20 +42,57 @@ public class ActividadController {
     }
 
     // Procesa el formulario
-    @PostMapping("/nuevo")
-    public String guardarActividad(@RequestParam("nombre") String nombre,
+    @PostMapping("/guardar")
+    public String guardarActividad(@RequestParam(required = false) Long id,
+            @RequestParam("nombre") String nombre,
             @RequestParam("monto") Integer monto,
             RedirectAttributes redirectAttributes, SessionStatus sessionStatus) {
 
-        Actividad actividad = new Actividad();
+        Actividad actividad;
+
+        if (id != null) {
+            actividad = actividadService.buscarPorId(id);
+        } else {
+            actividad = new Actividad();
+        }
+
         actividad.setNombre(nombre);
         actividad.setMonto(monto);
 
         actividadService.guardar(actividad);
         sessionStatus.setComplete();
 
-        redirectAttributes.addFlashAttribute("mensaje", "Actividad creada exitosamente");
+        redirectAttributes.addFlashAttribute("mensaje", id != null ? "Actividad actualizada existosamente" : "Actividad creada exitosamente");
         return "redirect:/actividades/listadoAdmin";
     }
+
+    @GetMapping("/editar/{id}")
+    public String getMethodName(@PathVariable Long id, Model model) {
+        
+        Actividad actividad = actividadService.buscarPorId(id);
+
+        model.addAttribute("actividad", actividad);
+
+        return "actividades/actividades-form";
+    }
+
+    // Eliminar actividad
+    @GetMapping("/eliminar/{id}")
+    public String eliminarActividad(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        Actividad actividad = actividadService.buscarPorId(id);
+
+        if (actividad == null) {
+            redirectAttributes.addFlashAttribute("error", "La actividad no existe.");
+            return "redirect:/actividades/listadoAdmin";
+        }
+
+        actividadService.eliminar(id);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Actividad eliminado correctamente.");
+
+        return "redirect:/actividades/listadoAdmin";
+    }
+    
 
 }
