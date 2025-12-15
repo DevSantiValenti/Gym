@@ -29,4 +29,9 @@ public class ActividadServiceImpl implements IActividadService{
        return actividadRepository.findById(id).orElse(null);
     }
 
+    @Override
+    public void eliminar(Long id) {
+        actividadRepository.deleteById(id);
+    }
+
 }

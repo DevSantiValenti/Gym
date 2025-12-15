@@ -113,19 +113,15 @@ public String finalizarFormulario(
     Actividad actividad = actividadService.buscarPorId(dto.getActividad().getId());
     Integer cuota = actividad.getMonto();
 
-    // -------------------------------------------------------------
-    // 2) Ver si el socio YA EXISTE (por DNI)
-    // -------------------------------------------------------------
-    Socio socioExistente = null;
+        // 1) Ver si el socio YA EXISTE (por DNI)
+        Socio socioExistente = null;
 
     if (dto.getDni() != null && !dto.getDni().isBlank()) {
         socioExistente = socioService.buscarPorDNI(dto.getDni());
     }
 
-    // -------------------------------------------------------------
-    // 3) SI EXISTE → PAGA CUOTA
-    // -------------------------------------------------------------
-    if (socioExistente != null) {
+        // 2) SI EXISTE → SOLO ACTUALIZA CUOTA
+        if (socioExistente != null) {
 
         socioExistente.setActividad(actividad);
         socioExistente.setSaldoPendiente(cuota - dto.getMonto());
