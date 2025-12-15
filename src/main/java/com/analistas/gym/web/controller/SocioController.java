@@ -100,7 +100,7 @@ public class SocioController {
 
     // Paso 2
     @PostMapping("/guardar")
-public String finalizarFormulario(
+    public String finalizarFormulario(
         @Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto,
         BindingResult result,
         SessionStatus sessionStatus,
@@ -135,7 +135,7 @@ public String finalizarFormulario(
         movimiento.setActividad(actividad.getNombre());
         movimiento.setSocioNombreCompleto(socioExistente.getNombreCompleto());
         movimiento.setDetalle("Pago de cuota");
-        //movimiento.setFormaPago(dto.getFormaPago()); // EFECTIVO / TRANSFERENCIA
+        movimiento.setFormaPago(dto.getFormaPago()); // EFECTIVO / TRANSFERENCIA
         movimiento.setMonto(dto.getMonto());
         movimiento.setTipoMovimiento(TipoMovimiento.CUOTA);
 
@@ -174,7 +174,7 @@ public String finalizarFormulario(
     movimiento.setActividad(actividad.getNombre());
     movimiento.setSocioNombreCompleto(socio.getNombreCompleto());
     movimiento.setDetalle("Pago de inscripción");
-   // movimiento.setFormaPago(dto.getFormaPago());
+    movimiento.setFormaPago(dto.getFormaPago());
     movimiento.setMonto(dto.getMonto());
     movimiento.setTipoMovimiento(TipoMovimiento.INSCRIPCION);
 

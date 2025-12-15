@@ -32,15 +32,22 @@
                     </div>
                 </div>
 
-                <!-- Fila 2: Monto y días por semana -->
+                <!-- Fila 2: Monto y método de pago -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="monto" class="required">Monto mensual <span id="montoSpan"></span></label>
+                        <label for="monto" class="required">
+                            Monto mensual <span id="montoSpan"></span>
+                        </label>
                         <input type="number" id="monto" name="monto" required>
                     </div>
+
                     <div class="form-group">
-                        <label for="diasPorSemana" class="required">Días por semana</label>
-                        <input type="number" id="diasPorSemana" name="diasPorSemana" min="1" max="7" required>
+                        <label for="formaPago" class="required">Método de pago</label>
+                        <select id="formaPago" th:field="*{formaPago}" required>
+                            <option value="" disabled selected>Seleccione...</option>
+                            <option value="EFECTIVO">Efectivo</option>
+                            <option value="TRANSFERENCIA">Transferencia</option>
+                        </select>
                     </div>
                 </div>
 

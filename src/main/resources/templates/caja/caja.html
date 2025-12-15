@@ -1,96 +1,102 @@
 <!DOCTYPE html>
-<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layout}">
+<html lang="es-AR"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 
 <head>
+    <link rel="stylesheet" href="/css/caja.css">
     <title>Caja</title>
 </head>
 
 <body>
-    <div layout:fragment="contenido">
 
-        <h2 class="text-warning mb-4">CAJA</h2>
+<div layout:fragment="contenido" class="list-container">
 
-        <!-- FILTROS -->
-        <form method="get" class="row g-3 mb-3">
-            <div class="col-md-3">
-                <label>Desde</label>
-                <input type="date" name="desde" class="form-control">
-            </div>
+    <h2>CAJA</h2>
 
-            <div class="col-md-3">
-                <label>Hasta</label>
-                <input type="date" name="hasta" class="form-control">
-            </div>
-
-            <div class="col-md-3">
-                <label>Tipo</label>
-                <select class="form-select">
-                    <option>Todo</option>
-                    <option>Pago de cuota</option>
-                    <option>Pago de inscripción</option>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <label>Forma de pago</label>
-                <select class="form-select">
-                    <option>Todo</option>
-                    <option>Efectivo</option>
-                    <option>Transferencia</option>
-                </select>
-            </div>
-
-            <div class="col-md-12 text-end">
-                <button class="btn btn-primary mt-2">Mostrar</button>
-            </div>
-        </form>
-
-        <!-- TABLA -->
-        <table class="table table-dark table-hover" id="tablaCaja">
-            <thead>
-                <tr>
-                    <th>Actividad</th>
-                    <th>Socio</th>
-                    <th>Detalle</th>
-                    <th>Fecha / Hora</th>
-                    <th>Pago</th>
-                    <th>Monto</th>
-                    <th>Eliminar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="m : ${movimientos}">
-                    <td th:text="${m.actividad}"></td>
-                    <td th:text="${m.socioNombreCompleto}"></td>
-                    <td th:text="${m.detalle}"></td>
-                    <td th:text="${#temporals.format(m.fechaHora, 'dd/MM/yyyy HH:mm')}"></td>
-                    <td th:text="${m.formaPago}"></td>
-                    <td th:text="${m.monto}"></td>
-                    <td>
-                        <form th:action="@{/caja/eliminar/{id}(id=${m.id})}" method="post">
-                            <button class="btn btn-danger btn-sm">X</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- TOTAL -->
-        <div class="text-end mt-4">
-            <h3>TOTAL: <span th:text="${total}"></span></h3>
+    <!-- FILTROS -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <label>Desde</label>
+            <input type="date" name="desde" class="form-control">
         </div>
 
+        <div class="col-md-3">
+            <label>Hasta</label>
+            <input type="date" name="hasta" class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <label>Tipo</label>
+            <select class="form-select">
+                <option>Todo</option>
+                <option>Pago de cuota</option>
+                <option>Pago de inscripción</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label>Forma de pago</label>
+            <select class="form-select">
+                <option>Todo</option>
+                <option>Efectivo</option>
+                <option>Transferencia</option>
+            </select>
+        </div>
+
+        <div class="col-md-12 text-end">
+            <button class="boton-nuevo mt-2">Mostrar</button>
+        </div>
+    </form>
+
+    <!-- TABLA -->
+    <div class="table-wrapper">
+        <table id="tablaCaja">
+            <thead>
+            <tr>
+                <th>Actividad</th>
+                <th>Socio</th>
+                <th>Detalle</th>
+                <th>Fecha / Hora</th>
+                <th>Forma de pago</th>
+                <th>Monto</th>
+                <th>Eliminar</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="m : ${movimientos}">
+                <td th:text="${m.actividad}"></td>
+                <td th:text="${m.socioNombreCompleto}"></td>
+                <td th:text="${m.detalle}"></td>
+                <td th:text="${#temporals.format(m.fechaHora, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${m.formaPago}"></td>
+                <td th:text="${m.monto}"></td>
+                <td class="acciones">
+                    <form th:action="@{/caja/eliminar/{id}(id=${m.id})}" method="post">
+                        <button type="submit" class="eliminar">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- Mis JS -->
-    <script th:fragment="js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#tablaCaja').DataTable();
-        });
-    </script>
+    <!-- TOTAL -->
+    <div class="text-end mt-4">
+        <h3>TOTAL: <span th:text="${total}"></span></h3>
+    </div>
+
+</div>
+
+<!-- JS -->
+<script th:fragment="js"></script>
+<script>
+    $(document).ready(function () {
+        $('#tablaCaja').DataTable();
+    });
+</script>
 
 </body>
-
 </html>

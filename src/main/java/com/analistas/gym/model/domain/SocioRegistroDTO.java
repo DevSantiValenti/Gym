@@ -21,5 +21,6 @@ public class SocioRegistroDTO {
     private String profesion;
     // --- Paso 2: datos de membresía ---
     private Integer monto;
+    private String formaPago;
 
 }
