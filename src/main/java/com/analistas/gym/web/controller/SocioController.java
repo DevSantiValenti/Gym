@@ -14,10 +14,13 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.analistas.gym.model.domain.Actividad;
+import com.analistas.gym.model.domain.MovimientoCaja;
 import com.analistas.gym.model.domain.Socio;
 import com.analistas.gym.model.domain.SocioRegistroDTO;
+import com.analistas.gym.model.domain.TipoMovimiento;
 import com.analistas.gym.model.service.IActividadService;
 import com.analistas.gym.model.service.ISocioService;
+import com.analistas.gym.model.service.MovimientoCajaService;
 
 import jakarta.validation.Valid;
 
@@ -33,6 +36,9 @@ public class SocioController {
 
     @Autowired
     ISocioService socioService;
+
+    @Autowired
+    private MovimientoCajaService cajaService;
 
     @Autowired
     IActividadService actividadService;
@@ -94,69 +100,95 @@ public class SocioController {
 
     // Paso 2
     @PostMapping("/guardar")
-    public String finalizarFormulario(@Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto,
-            BindingResult result, SessionStatus sessionStatus, RedirectAttributes redirectAttributes, Model model) {
+public String finalizarFormulario(
+        @Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto,
+        BindingResult result,
+        SessionStatus sessionStatus,
+        RedirectAttributes redirectAttributes,
+        Model model) {
 
-        Integer cuota = 20000;
+    // -------------------------------------------------------------
+    // 1) Obtener actividad y monto REAL
+    // -------------------------------------------------------------
+    Actividad actividad = actividadService.buscarPorId(dto.getActividad().getId());
+    Integer cuota = actividad.getMonto();
 
-        // -------------------------------------------------------------
-        // 1) Ver si el socio YA EXISTE (por DNI)
-        // -------------------------------------------------------------
-        Socio socioExistente = null;
+    // -------------------------------------------------------------
+    // 2) Ver si el socio YA EXISTE (por DNI)
+    // -------------------------------------------------------------
+    Socio socioExistente = null;
 
-        if (dto.getDni() != null && !dto.getDni().isBlank()) {
-            socioExistente = socioService.buscarPorDNI(dto.getDni());
-        }
+    if (dto.getDni() != null && !dto.getDni().isBlank()) {
+        socioExistente = socioService.buscarPorDNI(dto.getDni());
+    }
 
-        // -------------------------------------------------------------
-        // 2) SI EXISTE → SOLO ACTUALIZA CUOTA
-        // -------------------------------------------------------------
-        if (socioExistente != null) {
+    // -------------------------------------------------------------
+    // 3) SI EXISTE → PAGA CUOTA
+    // -------------------------------------------------------------
+    if (socioExistente != null) {
 
-            socioExistente.setSaldoPendiente(cuota - dto.getMonto());
-            socioExistente.setFechaVencimiento(LocalDate.now().plusMonths(1));
-            socioExistente.setCuotaPaga(true);
+        socioExistente.setActividad(actividad);
+        socioExistente.setSaldoPendiente(cuota - dto.getMonto());
+        socioExistente.setFechaVencimiento(LocalDate.now().plusMonths(1));
+        socioExistente.setCuotaPaga(true);
 
-            socioService.guardar(socioExistente);
+        socioService.guardar(socioExistente);
 
-            redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
-            return "redirect:/home";
-        }
+        // 👉 REGISTRO EN CAJA
+        MovimientoCaja movimiento = new MovimientoCaja();
+        movimiento.setActividad(actividad.getNombre());
+        movimiento.setSocioNombreCompleto(socioExistente.getNombreCompleto());
+        movimiento.setDetalle("Pago de cuota");
+        //movimiento.setFormaPago(dto.getFormaPago()); // EFECTIVO / TRANSFERENCIA
+        movimiento.setMonto(dto.getMonto());
+        movimiento.setTipoMovimiento(TipoMovimiento.CUOTA);
 
-        // Si el socio no existe: --------------------------------------------------
-        if (result.hasErrors()) {
-            return "socios/socios-form.html";
-        }
+        cajaService.guardar(movimiento);
 
-        Socio socio = new Socio();
-        // System.out.println("DTO recibido: " + dto); // ← Verás si los campos están
-        // vacíos
-
-        // Obtener la actividad:
-        Actividad actividad = actividadService.buscarPorId(dto.getActividad().getId());
-
-        socio.setNombreCompleto(dto.getNombreCompleto());
-        socio.setDni(dto.getDni());
-        socio.setFechaNacimiento(dto.getFechaNacimiento());
-        socio.setTelefono(dto.getTelefono());
-        socio.setProfesion(dto.getProfesion());
-        socio.setDireccion(dto.getDireccion());
-        // Paso 2
-        socio.setActividad(actividad);
-        socio.setFechaAlta(LocalDate.now());
-        socio.setFechaVencimiento((LocalDate.now()).plusMonths(1));
-        socio.setSaldoPendiente(cuota - dto.getMonto());
-        socio.setCuotaPaga(true);
-
-        // model.addAttribute("fechaInicio", socio.getFechaAlta());
-        // model.addAttribute("fechaVencimiento", socio.getFechaVencimiento());
-
-        socioService.guardar(socio);
-        sessionStatus.setComplete();
-        redirectAttributes.addFlashAttribute("mensaje", "Socio Registrado con éxito!");
-
+        redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
         return "redirect:/home";
     }
+
+    // -------------------------------------------------------------
+    // 4) SOCIO NUEVO
+    // -------------------------------------------------------------
+    if (result.hasErrors()) {
+        return "socios/socios-form.html";
+    }
+
+    Socio socio = new Socio();
+
+    socio.setNombreCompleto(dto.getNombreCompleto());
+    socio.setDni(dto.getDni());
+    socio.setFechaNacimiento(dto.getFechaNacimiento());
+    socio.setTelefono(dto.getTelefono());
+    socio.setProfesion(dto.getProfesion());
+    socio.setDireccion(dto.getDireccion());
+
+    socio.setActividad(actividad);
+    socio.setFechaAlta(LocalDate.now());
+    socio.setFechaVencimiento(LocalDate.now().plusMonths(1));
+    socio.setSaldoPendiente(cuota - dto.getMonto());
+    socio.setCuotaPaga(true);
+
+    socioService.guardar(socio);
+
+    // 👉 REGISTRO EN CAJA (INSCRIPCIÓN)
+    MovimientoCaja movimiento = new MovimientoCaja();
+    movimiento.setActividad(actividad.getNombre());
+    movimiento.setSocioNombreCompleto(socio.getNombreCompleto());
+    movimiento.setDetalle("Pago de inscripción");
+   // movimiento.setFormaPago(dto.getFormaPago());
+    movimiento.setMonto(dto.getMonto());
+    movimiento.setTipoMovimiento(TipoMovimiento.INSCRIPCION);
+
+    cajaService.guardar(movimiento);
+
+    sessionStatus.setComplete();
+    redirectAttributes.addFlashAttribute("mensaje", "Socio registrado con éxito!");
+
+    return "redirect:/home";
+}
 
     // Abonar cuota cuando esté vencida:
     @GetMapping("/editar/{id}")
@@ -167,7 +199,7 @@ public class SocioController {
         SocioRegistroDTO dto = new SocioRegistroDTO();
         dto.setDni(socio.getDni());
 
-        //Mostrar la lista de actividades
+        // Mostrar la lista de actividades
         List<Actividad> actividades = actividadService.listarActividades();
         model.addAttribute("actividades", actividades);
 

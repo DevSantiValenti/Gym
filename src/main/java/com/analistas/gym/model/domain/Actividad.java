@@ -1,19 +1,18 @@
 package com.analistas.gym.model.domain;
-
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import groovy.transform.ToString;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.ToString; // Importar la anotación ToString de Lombok
 
 @Data
 @Entity
+@ToString(exclude = "socios") // 🔥 SOLUCIÓN: Excluir la colección LAZY del toString()
 public class Actividad {
 
     @Id
@@ -25,6 +24,6 @@ public class Actividad {
     private Integer monto;
 
     @OneToMany(mappedBy = "actividad")
-    @JsonIgnore // ←←← Esto evita que se serialice la lista de socios
+    @JsonIgnore
     private List<Socio> socios;
 }
