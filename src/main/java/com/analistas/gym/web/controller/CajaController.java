@@ -46,7 +46,7 @@ public class CajaController {
         return "caja/caja";
     }
 
-    @PostMapping("/eliminar/{id}")
+    @GetMapping("/eliminar/{id}")
     public String eliminarMovimiento(@PathVariable Long id) {
         cajaService.eliminar(id);
         return "redirect:/caja";
