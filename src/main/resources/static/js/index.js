@@ -64,7 +64,7 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     // *** AGREGAR BOTÓN ***
                     const btn = document.createElement('a');
                     btn.id = 'boton-abonar';
-                    btn.href = `/socios/editar/${socio.id}`;
+                    btn.href = `/socios/abonarCuota/${socio.id}`;
                     btn.textContent = "ABONAR CUOTA";
                     btn.className = "btn-abonar";
 
