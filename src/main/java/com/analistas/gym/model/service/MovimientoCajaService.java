@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.analistas.gym.model.domain.MovimientoCaja;
+import com.analistas.gym.model.domain.TipoMovimiento;
 import com.analistas.gym.model.repository.MovimientoCajaRepository;
 
 @Service
@@ -20,11 +21,56 @@ public class MovimientoCajaService {
     public List<MovimientoCaja> findByFechaHoraBetween(LocalDateTime inicio, LocalDateTime fin) {
         return repository.findByFechaHoraBetween(inicio, fin);
     }
+
     public List<MovimientoCaja> obtenerMovimientosDelDia(LocalDate fecha) {
         LocalDateTime desde = fecha.atStartOfDay();
         LocalDateTime hasta = fecha.atTime(23, 59, 59);
 
         return repository.findByFechaHoraBetween(desde, hasta);
+    }
+
+    public List<MovimientoCaja> obtenerPorRangoYTipo(
+            LocalDate desde,
+            LocalDate hasta,
+            TipoMovimiento tipo) {
+
+        LocalDateTime inicio = desde.atStartOfDay();
+        LocalDateTime fin = hasta.atTime(23, 59, 59);
+
+        if (tipo == null) {
+            return repository.findByFechaHoraBetween(inicio, fin);
+        }
+
+        return repository.findByFechaHoraBetweenAndTipoMovimiento(inicio, fin, tipo);
+    }
+
+    public List<MovimientoCaja> obtenerPorFiltros(
+            LocalDate desde,
+            LocalDate hasta,
+            TipoMovimiento tipo,
+            String formaPago) {
+
+        LocalDateTime inicio = desde.atStartOfDay();
+        LocalDateTime fin = hasta.atTime(23, 59, 59);
+
+        // SIN FILTROS
+        if (tipo == null && formaPago == null) {
+            return repository.findByFechaHoraBetween(inicio, fin);
+        }
+
+        // SOLO TIPO
+        if (tipo != null && formaPago == null) {
+            return repository.findByFechaHoraBetweenAndTipoMovimiento(inicio, fin, tipo);
+        }
+
+        // SOLO FORMA DE PAGO
+        if (tipo == null) {
+            return repository.findByFechaHoraBetweenAndFormaPago(inicio, fin, formaPago);
+        }
+
+        // AMBOS FILTROS
+        return repository.findByFechaHoraBetweenAndTipoMovimientoAndFormaPago(
+                inicio, fin, tipo, formaPago);
     }
 
     public void guardar(MovimientoCaja movimiento) {

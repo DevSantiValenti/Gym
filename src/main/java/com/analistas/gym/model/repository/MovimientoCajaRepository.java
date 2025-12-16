@@ -6,11 +6,31 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.analistas.gym.model.domain.MovimientoCaja;
+import com.analistas.gym.model.domain.TipoMovimiento;
 
 public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, Long> {
 
     List<MovimientoCaja> findByFechaHoraBetween(
             LocalDateTime desde,
             LocalDateTime hasta
+    );
+
+    List<MovimientoCaja> findByFechaHoraBetweenAndTipoMovimiento(
+            LocalDateTime desde,
+            LocalDateTime hasta,
+            TipoMovimiento tipoMovimiento
+    );
+
+    List<MovimientoCaja> findByFechaHoraBetweenAndFormaPago(
+            LocalDateTime desde,
+            LocalDateTime hasta,
+            String formaPago
+    );
+
+    List<MovimientoCaja> findByFechaHoraBetweenAndTipoMovimientoAndFormaPago(
+            LocalDateTime desde,
+            LocalDateTime hasta,
+            TipoMovimiento tipoMovimiento,
+            String formaPago
     );
 }

@@ -1,7 +1,6 @@
 package com.analistas.gym.web.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.analistas.gym.model.domain.MovimientoCaja;
+import com.analistas.gym.model.domain.TipoMovimiento;
 import com.analistas.gym.model.service.MovimientoCajaService;
 
 @Controller
@@ -22,33 +21,52 @@ import com.analistas.gym.model.service.MovimientoCajaService;
 public class CajaController {
 
     @Autowired
-    private MovimientoCajaService cajaService;
+    private MovimientoCajaService movimientoCajaService;
 
     @GetMapping
     public String verCaja(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate desde,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate hasta,
+
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String formaPago,
             Model model) {
-        if (desde == null)
+
+        TipoMovimiento tipoMovimiento = null;
+
+        if (tipo != null && !tipo.isBlank()) {
+            tipoMovimiento = TipoMovimiento.valueOf(tipo);
+        }
+
+        if (desde == null) {
             desde = LocalDate.now();
-        if (hasta == null)
+        }
+        if (hasta == null) {
             hasta = LocalDate.now();
+        }
 
-        LocalDateTime inicio = desde.atStartOfDay();
-        LocalDateTime fin = hasta.atTime(23, 59, 59);
-
-        List<MovimientoCaja> movimientos = cajaService.findByFechaHoraBetween(inicio, fin);
+        List<MovimientoCaja> movimientos =
+                movimientoCajaService.obtenerPorFiltros(
+                        desde,
+                        hasta,
+                        tipoMovimiento,
+                        formaPago != null && !formaPago.isBlank() ? formaPago : null
+                );
 
         model.addAttribute("movimientos", movimientos);
-        model.addAttribute("total",
-                movimientos.stream().mapToDouble(MovimientoCaja::getMonto).sum());
+        model.addAttribute("total", movimientoCajaService.calcularTotal(movimientos));
 
         return "caja/caja";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarMovimiento(@PathVariable Long id) {
-        cajaService.eliminar(id);
+        movimientoCajaService.eliminar(id);
         return "redirect:/caja";
     }
 }
