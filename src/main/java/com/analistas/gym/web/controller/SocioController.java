@@ -60,6 +60,9 @@ public class SocioController {
     @GetMapping("/nuevo")
     public String nuevoSocio(Model model) {
 
+        model.addAttribute("socio", new Socio());
+        model.addAttribute("modo", "nuevo");
+
         return "socios/socios-form.html";
     }
 
@@ -67,16 +70,33 @@ public class SocioController {
 
     @PostMapping("/nuevo")
     public String procesarSocio1(@Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto, BindingResult result,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes, @ModelAttribute("socio") Socio socio) {
 
         if (result.hasErrors()) {
             // Si hay errores, vuelve al paso 1
             return "socios/socios-form.html";
         }
 
-        System.out.println("DTO recibido: " + dto); // ← Verás si los campos están vacíos
+        
+        if (socio.getId() != null) {
 
-        return "redirect:/socios/nuevo/final";
+            Socio socioDB = socioService.buscarPorId(socio.getId());
+
+            socioDB.setNombreCompleto(socio.getNombreCompleto());
+            socioDB.setDni(socio.getDni());
+            socioDB.setFechaNacimiento(socio.getFechaNacimiento());
+            socioDB.setTelefono(socio.getTelefono());
+            socioDB.setDireccion(socio.getDireccion());
+            socioDB.setProfesion(socio.getProfesion());
+
+            socioService.guardar(socioDB);
+            return "redirect:/socios/listadoAdmin";
+        } else {
+            return "redirect:/socios/nuevo/final";
+        }
+
+        // System.out.println("DTO recibido: " + dto); // ← Verás si los campos están
+        // vacíos
     }
 
     // Paso 2: mostrar el formulario de membresía
@@ -101,93 +121,98 @@ public class SocioController {
     // Paso 2
     @PostMapping("/guardar")
     public String finalizarFormulario(
-        @Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto,
-        BindingResult result,
-        SessionStatus sessionStatus,
-        RedirectAttributes redirectAttributes,
-        Model model) {
+            @Valid @ModelAttribute("socioRegistro") SocioRegistroDTO dto,
+            BindingResult result,
+            SessionStatus sessionStatus,
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
-    // -------------------------------------------------------------
-    // 1) Obtener actividad y monto REAL
-    // -------------------------------------------------------------
-    Actividad actividad = actividadService.buscarPorId(dto.getActividad().getId());
-    Integer cuota = actividad.getMonto();
+        // -------------------------------------------------------------
+        // 1) Obtener actividad y monto REAL
+        // -------------------------------------------------------------
+        Actividad actividad = actividadService.buscarPorId(dto.getActividad().getId());
+        Integer cuota = actividad.getMonto();
 
         // 1) Ver si el socio YA EXISTE (por DNI)
         Socio socioExistente = null;
 
-    if (dto.getDni() != null && !dto.getDni().isBlank()) {
-        socioExistente = socioService.buscarPorDNI(dto.getDni());
-    }
+        if (dto.getDni() != null && !dto.getDni().isBlank()) {
+            socioExistente = socioService.buscarPorDNI(dto.getDni());
+        }
 
         // 2) SI EXISTE → SOLO ACTUALIZA CUOTA
         if (socioExistente != null) {
 
-        socioExistente.setActividad(actividad);
-        socioExistente.setSaldoPendiente(cuota - dto.getMonto());
-        socioExistente.setFechaVencimiento(LocalDate.now().plusMonths(1));
-        socioExistente.setCuotaPaga(true);
+            // Calcular nuevo saldo pendiente acumulando el saldo anterior
+            Integer pago = dto.getMonto() != null ? dto.getMonto() : 0;
+            Integer saldoAnterior = socioExistente.getSaldoPendiente() != null ? socioExistente.getSaldoPendiente() : 0;
+            int nuevoSaldo = saldoAnterior + (cuota - pago);
 
-        socioService.guardar(socioExistente);
+            socioExistente.setActividad(actividad);
+            socioExistente.setSaldoPendiente(nuevoSaldo);
+            socioExistente.setFechaVencimiento(LocalDate.now().plusMonths(1));
+            socioExistente.setCuotaPaga(true);
 
-        // 👉 REGISTRO EN CAJA
+            socioService.guardar(socioExistente);
+
+            // 👉 REGISTRO EN CAJA
+            MovimientoCaja movimiento = new MovimientoCaja();
+            movimiento.setActividad(actividad.getNombre());
+            movimiento.setSocioNombreCompleto(socioExistente.getNombreCompleto());
+            movimiento.setDetalle("Pago de cuota");
+            movimiento.setFormaPago(dto.getFormaPago()); // EFECTIVO / TRANSFERENCIA
+            movimiento.setMonto(dto.getMonto());
+            movimiento.setTipoMovimiento(TipoMovimiento.CUOTA);
+
+            cajaService.guardar(movimiento);
+
+            redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
+            return "redirect:/home";
+        }
+
+        // -------------------------------------------------------------
+        // 4) SOCIO NUEVO
+        // -------------------------------------------------------------
+        if (result.hasErrors()) {
+            return "socios/socios-form.html";
+        }
+
+        Socio socio = new Socio();
+
+        socio.setNombreCompleto(dto.getNombreCompleto());
+        socio.setDni(dto.getDni());
+        socio.setFechaNacimiento(dto.getFechaNacimiento());
+        socio.setTelefono(dto.getTelefono());
+        socio.setProfesion(dto.getProfesion());
+        socio.setDireccion(dto.getDireccion());
+
+        socio.setActividad(actividad);
+        socio.setFechaAlta(LocalDate.now());
+        socio.setFechaVencimiento(LocalDate.now().plusMonths(1));
+        socio.setSaldoPendiente(cuota - dto.getMonto());
+        socio.setCuotaPaga(true);
+
+        socioService.guardar(socio);
+
+        // 👉 REGISTRO EN CAJA (INSCRIPCIÓN)
         MovimientoCaja movimiento = new MovimientoCaja();
         movimiento.setActividad(actividad.getNombre());
-        movimiento.setSocioNombreCompleto(socioExistente.getNombreCompleto());
-        movimiento.setDetalle("Pago de cuota");
-        movimiento.setFormaPago(dto.getFormaPago()); // EFECTIVO / TRANSFERENCIA
+        movimiento.setSocioNombreCompleto(socio.getNombreCompleto());
+        movimiento.setDetalle("Pago de inscripción");
+        movimiento.setFormaPago(dto.getFormaPago());
         movimiento.setMonto(dto.getMonto());
-        movimiento.setTipoMovimiento(TipoMovimiento.CUOTA);
+        movimiento.setTipoMovimiento(TipoMovimiento.INSCRIPCION);
 
         cajaService.guardar(movimiento);
 
-        redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
+        sessionStatus.setComplete();
+        redirectAttributes.addFlashAttribute("mensaje", "Socio registrado con éxito!");
+
         return "redirect:/home";
     }
 
-    // -------------------------------------------------------------
-    // 4) SOCIO NUEVO
-    // -------------------------------------------------------------
-    if (result.hasErrors()) {
-        return "socios/socios-form.html";
-    }
-
-    Socio socio = new Socio();
-
-    socio.setNombreCompleto(dto.getNombreCompleto());
-    socio.setDni(dto.getDni());
-    socio.setFechaNacimiento(dto.getFechaNacimiento());
-    socio.setTelefono(dto.getTelefono());
-    socio.setProfesion(dto.getProfesion());
-    socio.setDireccion(dto.getDireccion());
-
-    socio.setActividad(actividad);
-    socio.setFechaAlta(LocalDate.now());
-    socio.setFechaVencimiento(LocalDate.now().plusMonths(1));
-    socio.setSaldoPendiente(cuota - dto.getMonto());
-    socio.setCuotaPaga(true);
-
-    socioService.guardar(socio);
-
-    // 👉 REGISTRO EN CAJA (INSCRIPCIÓN)
-    MovimientoCaja movimiento = new MovimientoCaja();
-    movimiento.setActividad(actividad.getNombre());
-    movimiento.setSocioNombreCompleto(socio.getNombreCompleto());
-    movimiento.setDetalle("Pago de inscripción");
-    movimiento.setFormaPago(dto.getFormaPago());
-    movimiento.setMonto(dto.getMonto());
-    movimiento.setTipoMovimiento(TipoMovimiento.INSCRIPCION);
-
-    cajaService.guardar(movimiento);
-
-    sessionStatus.setComplete();
-    redirectAttributes.addFlashAttribute("mensaje", "Socio registrado con éxito!");
-
-    return "redirect:/home";
-}
-
     // Abonar cuota cuando esté vencida:
-    @GetMapping("/editar/{id}")
+    @GetMapping("/abonarCuota/{id}")
     public String editarEstadoCuota(@PathVariable Long id, Model model) {
 
         Socio socio = socioService.buscarPorId(id);
@@ -224,6 +249,17 @@ public class SocioController {
         redirectAttributes.addFlashAttribute("mensaje", "Socio eliminado correctamente.");
 
         return "redirect:/socios/listadoAdmin";
+    }
+
+    // Editar Información del Socio...
+    @GetMapping("/editar/{id}")
+    public String editarSocio(@PathVariable Long id, Model model) {
+
+        Socio socio = socioService.buscarPorId(id);
+
+        model.addAttribute("socio", socio);
+        model.addAttribute("modo", "editar");
+        return "socios/socios-form";
     }
 
 }

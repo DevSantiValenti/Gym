@@ -92,19 +92,33 @@ public class MovimientoCajaService {
 
     public List<Integer> obtenerTotalesPorMesYAnio(int anio) {
 
-    List<Object[]> resultados = repository.obtenerTotalesPorMes(anio);
+        List<Object[]> resultados = repository.obtenerTotalesPorMes(anio);
 
-    // Inicializamos 12 meses en 0
-    List<Integer> totales = new ArrayList<>(Collections.nCopies(12, 0));
+        // Inicializamos 12 meses en 0
+        List<Integer> totales = new ArrayList<>(Collections.nCopies(12, 0));
 
-    for (Object[] fila : resultados) {
-        int mes = ((Number) fila[0]).intValue();   // 1 a 12
-        int total = ((Number) fila[1]).intValue();
-        totales.set(mes - 1, total);
+        for (Object[] fila : resultados) {
+            int mes = ((Number) fila[0]).intValue(); // 1 a 12
+            int total = ((Number) fila[1]).intValue();
+            totales.set(mes - 1, total);
+        }
+
+        return totales;
     }
 
-    return totales;
-}
+    // Método para obtener total de inscripciones por mes
+    public List<Integer> obtenerInscripcionesPorMesYAnio(int anio) {
+        List<Object[]> resultados = repository.obtenerConteoPorMesYTipo(anio, TipoMovimiento.INSCRIPCION);
 
+        List<Integer> conteos = new ArrayList<>(Collections.nCopies(12, 0));
+
+        for (Object[] fila : resultados) {
+            int mes = ((Number) fila[0]).intValue(); // 1..12
+            int cantidad = ((Number) fila[1]).intValue();
+            conteos.set(mes - 1, cantidad);
+        }
+
+        return conteos;
+    }
 
 }

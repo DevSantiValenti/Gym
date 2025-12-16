@@ -17,44 +17,50 @@ import com.analistas.gym.model.service.MovimientoCajaService;
 @RequestMapping("/estadisticas")
 public class EstadisticasController {
 
-    @Autowired
-    private MovimientoCajaService cajaService;
+        @Autowired
+        private MovimientoCajaService cajaService;
 
-    @GetMapping
-public String verEstadisticas(
-        @RequestParam(required = false) Integer anio,
-        Model model) {
+        @GetMapping
+        public String verEstadisticas(@RequestParam(required = false) Integer anio, Model model) {
 
-    if (anio == null) {
-        anio = LocalDate.now().getYear();
-    }
+                if (anio == null) {
+                        anio = LocalDate.now().getYear();
+                }
 
-    List<String> meses = List.of(
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    );
+                List<String> meses = List.of(
+                                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
-    List<Integer> totales = cajaService.obtenerTotalesPorMesYAnio(anio);
+                List<Integer> totales = cajaService.obtenerTotalesPorMesYAnio(anio);
 
-    // 🔹 TOTAL ANUAL
-    int totalAnual = totales.stream()
-            .mapToInt(Integer::intValue)
-            .sum();
+                // 🔹 TOTAL ANUAL
+                int totalAnual = totales.stream()
+                                .mapToInt(Integer::intValue)
+                                .sum();
 
-    List<Integer> anios = IntStream
-            .rangeClosed(anio - 4, anio)
-            .boxed()
-            .sorted((a, b) -> b - a)
-            .toList();
+                List<Integer> anios = IntStream
+                                .rangeClosed(anio - 4, anio)
+                                .boxed()
+                                .sorted((a, b) -> b - a)
+                                .toList();
 
-    model.addAttribute("titulo", "Estadísticas");
-    model.addAttribute("meses", meses);
-    model.addAttribute("totales", totales);
-    model.addAttribute("totalAnual", totalAnual); // 👈 NUEVO
-    model.addAttribute("anioSeleccionado", anio);
-    model.addAttribute("anios", anios);
+                model.addAttribute("titulo", "Estadísticas");
+                model.addAttribute("meses", meses);
+                model.addAttribute("totales", totales);
+                model.addAttribute("totalAnual", totalAnual); // 👈 NUEVO
+                model.addAttribute("anioSeleccionado", anio);
+                model.addAttribute("anios", anios);
 
-    return "estadisticas/estadisticas";
-}
-    
+                // Canva de inscripciones por mes:
+                List<Integer> totalesIns = cajaService.obtenerTotalesPorMesYAnio(anio);
+                List<Integer> inscripcionesCounts = cajaService.obtenerInscripcionesPorMesYAnio(anio);
+
+                model.addAttribute("meses", meses);
+                model.addAttribute("totales", totalesIns);
+                model.addAttribute("inscripcionesCounts", inscripcionesCounts);
+                model.addAttribute("totalAnual", totalAnual);
+
+                return "estadisticas/estadisticas";
+        }
+
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.analistas.gym.model.domain.Actividad;
+import com.analistas.gym.model.domain.Socio;
 import com.analistas.gym.model.repository.IActividadRepository;
 
 @Service
@@ -31,6 +32,13 @@ public class ActividadServiceImpl implements IActividadService{
 
     @Override
     public void eliminar(Long id) {
+
+        Actividad actividad = actividadRepository.findById(id).orElseThrow(() -> new RuntimeException("Actividad no encontrada"));
+
+        for (Socio socios : actividad.getSocios()){
+            socios.setActividad(null);
+        }
+
         actividadRepository.deleteById(id);
     }
 

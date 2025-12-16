@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" th:href="@{/img/clubfit-removebg-preview.png}">
     <link rel="stylesheet" href="/css/datatable-list.css">
     <style>
-        
+
     </style>
 </head>
 
@@ -44,10 +44,11 @@
                             <td th:text="${socio.nombreCompleto}"></td>
                             <td th:text="${socio.dni}"></td>
                             <td th:text="${socio.telefono}"></td>
-                            <td th:text="${socio.actividad.nombre}"></td>
+                            <td th:text="${socio.actividad != null ? socio.actividad.nombre : 'Sin actividad'}"></td>
                             <td th:text="${#temporals.format(socio.fechaAlta, 'dd/MM/yyyy')}"></td>
                             <td th:text="${#temporals.format(socio.fechaVencimiento, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${socio.saldoPendiente != null ? ('$' + socio.saldoPendiente) : '-'}"></td>
+                            <td th:text="${socio.saldoPendiente != null ? ('$' + socio.saldoPendiente) : '-'}"
+                                th:class="${socio.saldoPendiente > 0 ? 'bg-danger fw-bold' : 'bg-success fw-bold'}"></td>
                             <td>
                                 <span th:if="${socio.cuotaPaga != null}"
                                     th:class="${socio.cuotaPaga} ? 'estado-pagado' : 'estado-pendiente'"
@@ -57,11 +58,15 @@
                                 <span th:if="${socio.cuotaPaga == null}">-</span>
                             </td>
                             <td class="acciones">
-                                <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
-                                    class="editar text-warning me-2 p-2 bg-dark rounded-3">Abonar Cuota</a>
+                                <a th:href="@{/socios/abonarCuota/{id}(id=${socio.id})}"
+                                    class="editar text-primary me-2 p-2 bg-dark rounded-3">Abonar Cuota</a>
                                 <a href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
                                     th:onclick="confirmarEliminacion('/socios/eliminar/' + [[${socio.id}]])">
                                     Eliminar
+                                </a>
+                                <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
+                                    class="editar text-warning me-2 p-2 bg-dark rounded-3">
+                                    Editar
                                 </a>
                             </td>
                         </tr>
@@ -73,7 +78,7 @@
 
     <!-- Mis JS -->
     <script th:fragment="js" th:src="@{/js/socios-list-admin.js}"></script>
-    
+
 </body>
 
 </html>

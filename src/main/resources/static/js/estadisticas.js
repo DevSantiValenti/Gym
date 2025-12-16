@@ -102,4 +102,50 @@ document.addEventListener("DOMContentLoaded", function () {
             "$ " + total.toLocaleString("es-AR");
     }
 
+    // --- Chart: Inscripciones mensuales (nuevo) ---
+    const inscripciones = window.inscripciones;
+    if (document.getElementById("inscripcionesChart") && Array.isArray(inscripciones) && inscripciones.length) {
+        new Chart(document.getElementById("inscripcionesChart"), {
+            type: 'bar',
+            data: {
+                labels: etiquetas,
+                datasets: [{
+                    label: 'Inscripciones (cantidad)',
+                    data: inscripciones,
+                    backgroundColor: coloresMeses.map(c => c.replace('#', '80') ? c : c).map((c, i) => {
+                        // color ligeramente distinto (tono sólido)
+                        return '#4caf50';
+                    }),
+                    borderColor: '#388e3c',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return '' + context.parsed.y.toLocaleString("es-AR");
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Inscripciones por mes'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return value.toLocaleString("es-AR");
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 });

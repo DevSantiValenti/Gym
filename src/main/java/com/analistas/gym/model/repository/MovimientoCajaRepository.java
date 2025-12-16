@@ -41,6 +41,14 @@ public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, 
                         """)
         List<Object[]> obtenerTotalesPorMes(@Param("anio") int anio);
 
-        
+        //Consulta para obtener cantidad de inscripciones por mes
+        @Query("""
+                            SELECT MONTH(m.fechaHora), COUNT(m)
+                            FROM MovimientoCaja m
+                            WHERE YEAR(m.fechaHora) = :anio AND m.tipoMovimiento = :tipo
+                            GROUP BY MONTH(m.fechaHora)
+                            ORDER BY MONTH(m.fechaHora)
+                        """)
+        List<Object[]> obtenerConteoPorMesYTipo(@Param("anio") int anio, @Param("tipo") TipoMovimiento tipo);
 
 }
