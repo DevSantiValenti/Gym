@@ -41,68 +41,69 @@ public class SocioServiceImpl implements ISocioService {
 
             Socio socio = socioOpt.get();
 
-            
             // Si la fecha de vencimiento ya pasó, marcar cuota como no pagada
             LocalDate fechaVto = socio.getFechaVencimiento();
-            if (fechaVto != null && (fechaVto.isEqual(LocalDate.now()) || fechaVto.isBefore(LocalDate.now()))) {
+            if (fechaVto != null && (fechaVto.isEqual(LocalDate.now()) ||
+                    fechaVto.isBefore(LocalDate.now()))) {
                 socio.setCuotaPaga(false);
             }
-            
+
             // Actualizar datos en BD
             socio.setVecesIngresado(socio.getVecesIngresado() == null ? 1 : socio.getVecesIngresado() + 1);
             socio.setUltIngreso(LocalDateTime.now());
             socioRepository.save(socio);
-            
+
             return Optional.of(socio);
         }
         return Optional.empty();
     }
-    
+
     @Override
     public List<Socio> buscarTodos() {
         return (List<Socio>) socioRepository.findAll();
     }
-    
+
     @Transactional
     @Override
     public List<Socio> listarSociosActualizados() {
-        
+
         List<Socio> socios = (List<Socio>) socioRepository.findAll();
         LocalDate hoy = LocalDate.now();
-        
+
         for (Socio socio : socios) {
             LocalDate fechaVto = socio.getFechaVencimiento();
-            
+
             if (fechaVto != null && !fechaVto.isAfter(hoy)) {
                 socio.setCuotaPaga(false);
             }
         }
-        
+
         socioRepository.saveAll(socios);
         return socios;
     }
-    
+
     @Override
     public Socio buscarPorId(Long id) {
         return socioRepository.findById(id).orElse(null);
     }
-    
+
     @Override
     public Socio buscarPorDNI(String dni) {
         return socioRepository.findByDni(dni).orElse(null);
     }
-    
+
     @Override
     public void eliminar(Long id) {
         socioRepository.deleteById(id);
     }
-    
+
 }
 
 // Guardar el valor del último ingreso ANTES de modificar
-// LocalDateTime ultimoIngresoAnterior = socio.getUltIngreso() != null ? socio.getUltIngreso()
+// LocalDateTime ultimoIngresoAnterior = socio.getUltIngreso() != null ?
+// socio.getUltIngreso()
 // // Copia para el frontend
-//         : LocalDateTime.now();
+// : LocalDateTime.now();
 // Socio copia = new Socio();
 // copia.setId(socio.getId());
 // copia.setNombreCompleto(socio.getNombreCompleto());

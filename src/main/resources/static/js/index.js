@@ -14,8 +14,8 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
             })
             .then(socio => {
 
-                // console.log("Socio recibido:", socio);  // ← AGREGAR ESTE
-                // console.log("Actividad recibida:", socio.actividad); // ← Y ESTE
+                // console.log("Socio recibido:", socio);  // 
+                // console.log("Actividad recibida:", socio.actividad); //
 
                 const parseLocalDate = (fechaStr) => {
                     if (!fechaStr) return null;
@@ -27,13 +27,22 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
 
                 let diasRestantes = null;
 
-                if (fechaVto) {
-                    const hoy = new Date();
-                    const hoyFlat = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 12, 0, 0);
+                const diasEntre = (fechaVtoStr) => {
+                    if (!fechaVtoStr) return null;
 
-                    // NO reconstruyas fechaVto, ya es una fecha "plana"
-                    diasRestantes = Math.floor((fechaVto - hoyFlat) / (1000 * 60 * 60 * 24));
-                }
+                    const [y, m, d] = fechaVtoStr.split('-').map(Number);
+
+                    const fechaVto = Date.UTC(y, m - 1, d);
+                    const hoy = new Date();
+                    const hoyUTC = Date.UTC(
+                        hoy.getUTCFullYear(),
+                        hoy.getUTCMonth(),
+                        hoy.getUTCDate()
+                    );
+
+                    return Math.floor((fechaVto - hoyUTC) / (1000 * 60 * 60 * 24));
+                };
+                diasRestantes = diasEntre(socio.fechaVencimiento);
 
                 const ultIngreso = socio.ultIngreso ? new Date(socio.ultIngreso) : null;
 
@@ -58,7 +67,7 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                 if (btnPrevio) btnPrevio.remove();
 
                 // Prioridad: vencida -> próximo (≤5 días) -> al día
-                if (socio.cuotaPaga === false || (diasRestantes !== null && diasRestantes <= 0)) {
+                if (diasRestantes !== null && diasRestantes <= 0) {
                     // 0 días → HOY es el vencimiento → se considera vencida
                     estadoDiv.innerHTML = '<h3>CUOTA VENCIDA</h3>';
                     estadoDiv.className = 'estado cuota-vencida';
@@ -82,7 +91,8 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     estadoDiv.innerHTML = '<h3>CUOTA AL DÍA</h3>';
                     estadoDiv.className = 'estado cuota-al-dia';
                 }
-                // console.log("Fecha recibida del backend:", socio.fechaVencimiento);
+                console.log("Fecha vto:", socio.fechaVencimiento, "→ Días restantes:", diasRestantes, "Fecha HOY:", socio.ultIngreso);
+                console.log("Fecha recibida del backend:", socio.fechaVencimiento);
                 document.getElementById('alertas').innerHTML = '';
 
                 // -----------------------------
