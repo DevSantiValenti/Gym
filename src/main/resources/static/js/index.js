@@ -72,7 +72,8 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                 if (btnPrevio) btnPrevio.remove();
 
                 // Prioridad: vencida -> próximo (≤5 días) -> al día
-                if (diasRestantes !== null && diasRestantes <= 0) {
+                // Además considerar `socio.cuotaPaga === false` como vencida aunque queden días
+                if (socio.cuotaPaga === false || (diasRestantes !== null && diasRestantes <= 0)) {
                     // 0 días → HOY es el vencimiento → se considera vencida
                     estadoDiv.innerHTML = '<h3>CUOTA VENCIDA</h3>';
                     estadoDiv.className = 'estado cuota-vencida';
