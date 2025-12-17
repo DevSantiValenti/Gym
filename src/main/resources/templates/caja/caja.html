@@ -60,7 +60,7 @@
                         <th>Fecha / Hora</th>
                         <th>Forma de pago</th>
                         <th>Monto</th>
-                        <th>Eliminar</th>
+                        <th sec:authorize="${hasRole('ADMIN')}">Eliminar</th>
                     </tr>
                 </thead>
 
@@ -76,7 +76,7 @@
                             <!-- <form th:action="@{/caja/eliminar/{id}(id=${m.id})}" method="post">
                                 <button type="submit" class="eliminar">Eliminar</button>
                             </form> -->
-                            <a href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
+                            <a sec:authorize="${hasRole('ADMIN')}" href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
                                 th:onclick="confirmarEliminacion('/caja/eliminar/' + [[${m.id}]])">
                                 Eliminar
                             </a>

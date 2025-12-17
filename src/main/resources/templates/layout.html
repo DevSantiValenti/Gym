@@ -31,7 +31,7 @@
                     <li><a th:href="@{/socios/listadoAdmin}">👥 Socios</a></li>
                     <li><a th:href="@{/actividades/listadoAdmin}">🏋️‍♂️ Actividades</a></li>
                     <li><a th:href="@{/caja}">💼 Caja</a></li>
-                    <li><a th:href="@{/estadisticas}">📊 Estadísticas</a></li>
+                    <li sec:authorize="${hasRole('ADMIN')}"><a th:href="@{/estadisticas}">📊 Estadísticas</a></li>
                     <!--Parte del cierre de sesion-->
                     <li class="nav-item dropdown">
                         <a id="user-link" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"

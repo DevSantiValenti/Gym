@@ -1,6 +1,7 @@
 package com.analistas.gym.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,6 +79,7 @@ public class ActividadController {
 
     // Eliminar actividad
     @GetMapping("/eliminar/{id}")
+    @Secured({"ROLE_ADMIN"})
     public String eliminarActividad(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
         Actividad actividad = actividadService.buscarPorId(id);

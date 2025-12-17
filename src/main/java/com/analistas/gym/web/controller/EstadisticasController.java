@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import com.analistas.gym.model.service.MovimientoCajaService;
 
 @Controller
 @RequestMapping("/estadisticas")
+@Secured({"ROLE_ADMIN"})
 public class EstadisticasController {
 
         @Autowired

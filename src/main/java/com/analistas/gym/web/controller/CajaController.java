@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,6 +66,7 @@ public class CajaController {
     }
 
     @GetMapping("/eliminar/{id}")
+    @Secured({"ROLE_ADMIN"})
     public String eliminarMovimiento(@PathVariable Long id) {
         movimientoCajaService.eliminar(id);
         return "redirect:/caja";

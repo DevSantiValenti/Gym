@@ -1,3 +1,5 @@
+let timerLimpieza = null;
+
 document.getElementById('busqueda').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         const dni = this.value.trim();
@@ -80,15 +82,39 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     estadoDiv.innerHTML = '<h3>CUOTA AL DÍA</h3>';
                     estadoDiv.className = 'estado cuota-al-dia';
                 }
-
                 // console.log("Fecha recibida del backend:", socio.fechaVencimiento);
-
                 document.getElementById('alertas').innerHTML = '';
+
+                // -----------------------------
+                // AUTO RESET A LOS 15 SEGUNDOS
+                // -----------------------------
+                if (timerLimpieza) {
+                    clearTimeout(timerLimpieza);
+                }
+
+                timerLimpieza = setTimeout(() => {
+                    // Limpiar tarjeta
+                    document.getElementById('tarjeta').style.display = 'none';
+                    document.getElementById('datos-socio').innerHTML = '';
+
+                    // Limpiar estado
+                    document.getElementById('estado').style.display = 'none';
+                    document.getElementById('estado').innerHTML = '';
+
+                    // Limpiar alertas
+                    document.getElementById('alertas').innerHTML = '';
+
+                    // Limpiar input y devolver foco
+                    const input = document.getElementById('busqueda');
+                    input.value = '';
+                    input.focus();
+                }, 10000);
             })
             .catch(() => {
                 document.getElementById('alertas').innerHTML = '<div class="error">❌ Socio no encontrado</div>';
                 document.getElementById('tarjeta').style.display = 'none';
                 document.getElementById('estado').style.display = 'none';
+                document.getElementById('busqueda').focus();
             });
     }
 });

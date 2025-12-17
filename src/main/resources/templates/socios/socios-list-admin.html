@@ -60,7 +60,7 @@
                             <td class="acciones">
                                 <a th:href="@{/socios/abonarCuota/{id}(id=${socio.id})}"
                                     class="editar text-primary me-2 p-2 bg-dark rounded-3">Abonar Cuota</a>
-                                <a href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
+                                <a sec:authorize="${hasRole('ADMIN')}" href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
                                     th:onclick="confirmarEliminacion('/socios/eliminar/' + [[${socio.id}]])">
                                     Eliminar
                                 </a>
