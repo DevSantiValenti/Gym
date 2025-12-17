@@ -1,4 +1,9 @@
+//Limpiar socio
 let timerLimpieza = null;
+
+// 🎵 Sonidos
+const sonidoOk = new Audio('/sounds/ok.mp3');
+const sonidoVencida = new Audio('/sounds/vencida.mp3');
 
 document.getElementById('busqueda').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
@@ -72,6 +77,10 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     estadoDiv.innerHTML = '<h3>CUOTA VENCIDA</h3>';
                     estadoDiv.className = 'estado cuota-vencida';
 
+                     // Sonido cuota vencida
+                    sonidoVencida.currentTime = 0;
+                    sonidoVencida.play();
+
                     // *** AGREGAR BOTÓN ***
                     const btn = document.createElement('a');
                     btn.id = 'boton-abonar';
@@ -90,6 +99,10 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                 } else {
                     estadoDiv.innerHTML = '<h3>CUOTA AL DÍA</h3>';
                     estadoDiv.className = 'estado cuota-al-dia';
+
+                    //  Sonido cuota al día
+                    sonidoOk.currentTime = 0;
+                    sonidoOk.play();
                 }
                 console.log("Fecha vto:", socio.fechaVencimiento, "→ Días restantes:", diasRestantes, "Fecha HOY:", socio.ultIngreso);
                 console.log("Fecha recibida del backend:", socio.fechaVencimiento);

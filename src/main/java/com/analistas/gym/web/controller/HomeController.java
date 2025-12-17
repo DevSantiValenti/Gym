@@ -22,7 +22,7 @@ public class HomeController {
 
     @GetMapping({"/", "/home"})
     public String getMethodName() {
-        return "index.html";
+        return "index";
     }
     
     @GetMapping("/api/socios/dni")
