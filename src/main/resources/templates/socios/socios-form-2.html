@@ -66,7 +66,9 @@
                 </div>
 
                 <!-- Botón -->
-                <button type="submit" class="btn-siguiente">REGISTRAR SOCIO</button>
+                <button type="submit" class="btn-siguiente"
+                    th:text="${socio == null or socio.id == null ? 'REGISTRAR SOCIO' : 'REGISTRAR CUOTA'}">
+                </button>
 
             </form>
         </div>
