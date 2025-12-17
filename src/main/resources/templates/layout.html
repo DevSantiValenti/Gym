@@ -11,12 +11,15 @@
     <!-- Mis estilos -->
     <link rel="stylesheet" href="/css/style.css">
 
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    
+
 </head>
 
 <body>
@@ -34,8 +37,8 @@
                     <li sec:authorize="${hasRole('ADMIN')}"><a th:href="@{/estadisticas}">📊 Estadísticas</a></li>
                     <!--Parte del cierre de sesion-->
                     <li class="nav-item dropdown">
-                        <a id="user-link" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                            role="button">
+                        <a id="user-link" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false" role="button">
                             <span>Bienvenido </span>
                             <span sec:authentication="name"></span>
                             <span sec:authentication="principal.authorities" style="display:none;"></span>
@@ -44,11 +47,12 @@
                             <li>
                                 <span class="dropdown-divider"></span>
                                 <form id="logoutForm" action="/logout">
-                                    <a href="#" class="dropdown-item" onclick="$('#logoutForm').submit();">Cerrar Sesión</a>
+                                    <a href="#" class="dropdown-item" onclick="$('#logoutForm').submit();">Cerrar
+                                        Sesión</a>
                                 </form>
                             </li>
                         </ul>
-                        </li>
+                    </li>
                     <!-- <li>💬 Whatsapp</li> -->
                 </ul>
             </nav>
@@ -71,11 +75,11 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-     
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Mis JS -->
-     <script th:src="@{/js/confirmacionEliminar.js}"></script>
+    <script th:src="@{/js/confirmacionEliminar.js}"></script>
 
     <script th:replace="~{:: js}"></script>
     <!-- Esto hace, que en otras paginas se herede estos JS, ademas de agregar el nuestro para esa pag -->
