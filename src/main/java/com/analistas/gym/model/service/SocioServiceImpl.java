@@ -1,8 +1,11 @@
 package com.analistas.gym.model.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +50,9 @@ public class SocioServiceImpl implements ISocioService {
                     fechaVto.isBefore(LocalDate.now()))) {
                 socio.setCuotaPaga(false);
             }
+
+            // 2 Resetear frecuencia si corresponde (LUNES)
+            resetearVecesIngresadoSiCorresponde(socio);
 
             // Actualizar datos en BD
             socio.setVecesIngresado(socio.getVecesIngresado() == null ? 1 : socio.getVecesIngresado() + 1);
@@ -97,6 +103,30 @@ public class SocioServiceImpl implements ISocioService {
         socioRepository.deleteById(id);
     }
 
+    private void resetearVecesIngresadoSiCorresponde(Socio socio) {
+
+        if (socio.getUltIngreso() == null) {
+            socio.setVecesIngresado(0);
+            return;
+        }
+
+        LocalDate hoy = LocalDate.now();
+        LocalDate ultimoIngreso = socio.getUltIngreso().toLocalDate();
+
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+
+        int semanaActual = hoy.get(weekFields.weekOfWeekBasedYear());
+        int semanaUltimoIngreso = ultimoIngreso.get(weekFields.weekOfWeekBasedYear());
+
+        int anioActual = hoy.getYear();
+        int anioUltimoIngreso = ultimoIngreso.getYear();
+
+        // Si cambió la semana o el año → reset
+        if (semanaActual != semanaUltimoIngreso || anioActual != anioUltimoIngreso) {
+            socio.setVecesIngresado(0);
+        }
+
+    }
 }
 
 // Guardar el valor del último ingreso ANTES de modificar
