@@ -96,6 +96,9 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     estadoDiv.innerHTML =
                         `<h3>LA CUOTA VENCE EN ${diasRestantes} DÍA${diasRestantes === 1 ? '' : 'S'}</h3>`;
                     estadoDiv.className = 'estado cuota-proximo';
+                     //  Sonido cuota proxima a vencer
+                    sonidoOk.currentTime = 0;
+                    sonidoOk.play();
 
                 } else {
                     estadoDiv.innerHTML = '<h3>CUOTA AL DÍA</h3>';
