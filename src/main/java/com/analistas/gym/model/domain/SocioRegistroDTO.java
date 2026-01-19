@@ -13,6 +13,8 @@ public class SocioRegistroDTO {
     private String nombreCompleto;
     private String dni;
     private LocalDate fechaNacimiento;
+    private LocalDate fechaVencimiento;
+    private LocalDate fechaAlta;
     private String telefono;
     private String direccion;
     @ManyToOne

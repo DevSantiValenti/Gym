@@ -151,7 +151,9 @@ public class SocioController {
 
             socioExistente.setActividad(actividad);
             socioExistente.setSaldoPendiente(nuevoSaldo);
-            socioExistente.setFechaVencimiento(LocalDate.now().plusMonths(1));
+            // socioExistente.setFechaVencimiento(LocalDate.now().plusMonths(1));
+            // socioExistente.setFechaAlta(dto.getFechaAlta());
+            socioExistente.setFechaVencimiento(dto.getFechaVencimiento());
             socioExistente.setCuotaPaga(true);
 
             socioService.guardar(socioExistente);
@@ -188,8 +190,10 @@ public class SocioController {
         socio.setDireccion(dto.getDireccion());
 
         socio.setActividad(actividad);
-        socio.setFechaAlta(LocalDate.now());
-        socio.setFechaVencimiento(LocalDate.now().plusMonths(1));
+        // socio.setFechaAlta(LocalDate.now());
+        // socio.setFechaVencimiento(LocalDate.now().plusMonths(1));
+        socio.setFechaAlta(dto.getFechaAlta());
+        socio.setFechaVencimiento(dto.getFechaVencimiento());
         socio.setSaldoPendiente(cuota - dto.getMonto());
         socio.setCuotaPaga(true);
 
