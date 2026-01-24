@@ -43,14 +43,14 @@ public class WebSecurityConfig {
     @Bean
 	public UserDetailsService userDetailsService() {
 	    		UserDetails userAdmin = User.withDefaultPasswordEncoder()
-				.username("admin")
-				.password("admin")
+				.username("Dueño")
+				.password("allmylvl123parts")
 				.roles("ADMIN")
 				.build();
 
                 UserDetails user = User.withDefaultPasswordEncoder()
-				.username("secretaria")
-				.password("secretaria")
+				.username("Administrador")
+				.password("clubfithouse1908")
 				.roles("USER")
 				.build();
 
