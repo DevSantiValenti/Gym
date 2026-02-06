@@ -36,8 +36,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="act : ${actividad}"> <!-- Esta parte hace que cuando elimines -->
-                            <td th:text="${act.id}"></td> <!-- un socio el id se reinicie -->
+                        <tr th:each="act, iterStat : ${actividad}"> <!-- Esta parte hace que cuando elimines -->
+                            <td th:text="${iterStat.index + 1}"></td> <!-- una actividad el id se reinicie -->
                             <td th:text="${act.nombre}"></td>
                             <td th:text="${act.monto}"></td>
                             <td th:text="${#lists.size(act.socios)}"></td>
