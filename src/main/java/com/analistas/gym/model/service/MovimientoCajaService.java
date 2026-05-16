@@ -2,6 +2,8 @@ package com.analistas.gym.model.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,4 +89,22 @@ public class MovimientoCajaService {
                 .mapToDouble(MovimientoCaja::getMonto)
                 .sum();
     }
+
+    public List<Integer> obtenerTotalesPorMesYAnio(int anio) {
+
+    List<Object[]> resultados = repository.obtenerTotalesPorMes(anio);
+
+    // Inicializamos 12 meses en 0
+    List<Integer> totales = new ArrayList<>(Collections.nCopies(12, 0));
+
+    for (Object[] fila : resultados) {
+        int mes = ((Number) fila[0]).intValue();   // 1 a 12
+        int total = ((Number) fila[1]).intValue();
+        totales.set(mes - 1, total);
+    }
+
+    return totales;
+}
+
+
 }
